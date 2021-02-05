@@ -1,0 +1,22 @@
+*.o
+*.d
+*.bin
+*.elf
+*.map
+
+*.#*
+
+# Editor backup files
+*#*
+*.swp
+
+# User created files
+.config
+
+# Patch files
+*.diff
+*.patch
+
+# Tags table
+TAGS
+/build/

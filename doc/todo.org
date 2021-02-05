@@ -1,0 +1,46 @@
+* TODO M4naos List of To-Do items [0/7]
+
+** TODO Enable USB clocks
+
+** TODO Deassert Macrocell-specific Reset
+
+** TODO Switch on Analog part of USB
+
+   This is achieved via PDWN bit on CNTR register. Also, keep an eye for
+   tSTARTUP. Look it up on datasheet
+
+** TODO Deassert USB Reset
+
+   After waiting for tSTARTUP, clear FRES on CNTR resgister
+
+** TODO Clear ISTR Register
+
+   This makes sure any spurious pending IRQs are cleared
+
+** TODO Initialize all necessary registers
+
+   Anything which is not related to endpoints, should be initialized according
+   to our needs (remember, we're doing a keyboard).
+
+** TODO Receive and process USB Reset [0/3]
+
+*** TODO Enable USB Function
+
+    This is accomplished by setting EF bit of USB_DADDR register
+
+*** TODO Process SetAddress
+
+    We should extract host-provided address from control request and write it to
+    bits [6:0] of USB_DADDR
+
+*** TODO Configure any other necessary endpoints
+    For us, we're talking about another Interrupt IN endpoint which will be used
+    to transfer HID Reports.
+
+*** TODO Implement USB HID protocol
+    This will be quite a bit of work, involving a ton of type definitions to
+    create a simplistic USB Peripheral stack. I still want to split USB
+    application (what Linux refers to as Gadget Driver) from the UDC (for USB
+    Device Controller) so that we could, potentially, plug different
+    applications to the same UDC. One extra application could be, for example,
+    DFU for FW upgrade.
