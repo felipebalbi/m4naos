@@ -32,21 +32,14 @@
 
 static void putch(int c)
 {
-	int i;
-
-	writeb(APB2_USART1, USART_DR, c);
 	while (!(readl(APB2_USART1, USART_SR) & BIT(6)));
-
-	for (i = 0; i < 100000; i++);
+	writeb(APB2_USART1, USART_DR, c);
 }
 
 static void putstr(const char *str)
 {
-	while (*str) {
+	while (*str)
 		putch(*str++);
-		if (*str == '\n')
-			putch('\r');
-	}
 }
 
 static void uart_init(void)
@@ -78,12 +71,15 @@ static void uart_init(void)
 	reg &= ~(3 << 12); /* 1 stop bit */
 	writel(APB2_USART1, USART_CR2, reg);
 
-	/* reg = 0x46; /\* 4.3215 *\/ */
-	reg = 0x8b; /* 8.6875 */
+	/*
+	 * According to Table 137, page 982 on STM32F405 reference manual, the
+	 * following results in a baud rate of 2Mbps with an error of 0%.
+	 */
+	reg = 0x10; /* 1.0 */
 	writel(APB2_USART1, USART_BRR, reg);
 
 	reg = readl(APB2_USART1, USART_CR1);
-	reg |= 	BIT(3); /* TE */
+	reg |= 	BIT(15) | BIT(3); /* OVER8 | TE */
 	writel(APB2_USART1, USART_CR1, reg);
 }
 
@@ -94,7 +90,7 @@ int main(void)
 	uart_init();
 
 	while (true)
-		putstr("Felipe");
+		putstr("Felipe\n");
 		/* printf("M4naos Version %02x.%02x.%02x\n", */
 		/* 		M4NAOS_VERSION >> 8 & 0xff, */
 		/* 		M4NAOS_VERSION >> 4 & 0xff, */
