@@ -15,20 +15,71 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <m4naos/kernel.org>
+#include <m4naos/kernel.h>
 #include <m4naos/irq.h>
 #include <m4naos/io.h>
+#include <m4naos/uart.h>
+#include <m4naos/rcc.h>
 
-static void uart_putchar(int c)
+#define USART_SR	0x00
+#define USART_DR	0x04
+#define USART_BRR	0x08
+#define USART_CR1	0x0c
+#define USART_CR2	0x10
+
+static void __uart_putch(char c)
 {
 	while (!(readl(APB2_USART1, USART_SR) & BIT(6)));
 	writeb(APB2_USART1, USART_DR, c);
 }
 
-static void uart_puts(const char *str)
+static void __uart_puts(const char *str)
 {
 	while (*str)
 		uart_putch(*str++);
 }
 
+void uart_init(void)
+{
+	u32 reg;
 
+	clk_enable(RCC_AHB1ENR, BIT(0));
+	clk_enable(RCC_APB2ENR, BIT(4));
+
+	reg = readl(AHB1_GPIOA, 0x00);
+	reg |= (2 << 18);
+	writel(AHB1_GPIOA, 0x00, reg);
+
+	reg = readl(AHB1_GPIOA, 0x24);
+	reg |= (7 << 4);
+	writel(AHB1_GPIOA, 0x24, reg);
+
+	reg = readl(APB2_USART1, USART_CR1);
+	reg |= 	BIT(13); /* UE */
+	reg &= ~BIT(12); /* M */
+	writel(APB2_USART1, USART_CR1, reg);
+
+	reg = readl(APB2_USART1, USART_CR2);
+	reg &= ~(3 << 12); /* 1 stop bit */
+	writel(APB2_USART1, USART_CR2, reg);
+
+	/*
+	 * According to Table 137, page 982 on STM32F405 reference manual, the
+	 * following results in a baud rate of 2Mbps with an error of 0%.
+	 */
+	reg = 0x10; /* 1.0 */
+	writel(APB2_USART1, USART_BRR, reg);
+
+	reg = readl(APB2_USART1, USART_CR1);
+	reg |= 	BIT(15) | BIT(3); /* OVER8 | TE */
+	writel(APB2_USART1, USART_CR1, reg);
+}
+
+void uart_putch(char c)
+{
+	__uart_putch(c);
+}
+
+void uart_puts(const char *str)
+{
+	__uart_puts(str);}

@@ -15,22 +15,13 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <m4naos/delay.h>
-#include <m4naos/hardware.h>
-#include <m4naos/irq.h>
+#ifndef __M4NAOS_UART_H
+#define __M4NAOS_UART_H
+
 #include <m4naos/kernel.h>
-#include <m4naos/string.h>
-#include <m4naos/io.h>
-#include <m4naos/uart.h>
 
-int main(void)
-{
-	local_irq_enable();
+void uart_init(void);
+void uart_putch(char c);
+void uart_puts(const char *str);
 
-	uart_init();
-
-	while (true)
-		uart_puts("m4naOS\n");
-
-	return 0;
-}
+#endif /* __M4NAOS_UART_H */

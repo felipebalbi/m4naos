@@ -15,22 +15,26 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <m4naos/delay.h>
 #include <m4naos/hardware.h>
-#include <m4naos/irq.h>
-#include <m4naos/kernel.h>
-#include <m4naos/string.h>
+#include <m4naos/rcc.h>
 #include <m4naos/io.h>
-#include <m4naos/uart.h>
 
-int main(void)
+int clk_enable(u32 offset, u32 mask)
 {
-	local_irq_enable();
+	u32 reg;
 
-	uart_init();
-
-	while (true)
-		uart_puts("m4naOS\n");
+	reg = readl(AHB1_RCC, offset);
+	reg |= mask;
+	writel(AHB1_RCC, offset, reg);
 
 	return 0;
+}
+
+void clk_disable(u32 offset, u32 mask)
+{
+	u32 reg;
+
+	reg = readl(AHB1_RCC, offset);
+	reg &= ~mask;
+	writel(AHB1_RCC, offset, reg);
 }
