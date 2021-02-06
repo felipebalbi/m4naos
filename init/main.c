@@ -28,9 +28,10 @@ int main(void)
 	local_irq_enable();
 
 	uart_init();
+	uart_puts("m4naOS " M4NAOS_VERSION_STR "\n");
 
 	while (true)
-		uart_puts("m4naOS\n");
+		__wfi();
 
 	return 0;
 }
