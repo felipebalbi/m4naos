@@ -33,6 +33,15 @@ extern u32 __end_data__;
 extern u32 __start_bss__;
 extern u32 __end_bss__;
 
+static void fpu_init(void)
+{
+	u32 reg;
+
+	reg = readl(FPU_BASE, FPU_CPACR);
+	reg |= FPU_CPACR_CP10(3) | FPU_CPACR_CP11(3);
+	writel(FPU_BASE, FPU_CPACR, reg);
+}
+
 void reset_handler(void)
 {
 	unsigned int *src;
@@ -47,6 +56,7 @@ void reset_handler(void)
 	while (dst < &__end_bss__)
 		*dst++ = 0;
 
+	fpu_init();
 	system_timer_init();
 	main();
 }

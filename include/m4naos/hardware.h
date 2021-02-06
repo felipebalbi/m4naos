@@ -114,6 +114,15 @@
 #define SCB_SHPR2		0x18
 #define SCB_SHPR3		0x1c
 
+#define FPU_BASE		0xe000ed88
+#define FPU_CPACR		0x0000
+#define FPU_FPCCR		0x01ac
+#define FPU_FPCACR		0x01b0
+#define FPU_FPDSCR		0x01b4
+
+#define FPU_CPACR_CP10(n)	((n) << 20)
+#define FPU_CPACR_CP11(n)	((n) << 22)
+
 #define SCB_CPUID_REVISION(n)	((n) & 0x0f)
 #define SCB_CPUID_PARTNO(n)	(((n) & 0xfff0) >> 4)
 #define SCB_CPUID_ARCH(n)	(((n) & 0xf0000) >> 16)
