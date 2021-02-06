@@ -38,11 +38,6 @@ extern u32 __end_data__;
 extern u32 __start_bss__;
 extern u32 __end_bss__;
 
-static void scb_init(void)
-{
-	writel(SCB_BASE, SCB_VTOR, SCB_VTOR_TBLOFF(__start_vectors__));
-}
-
 void reset_handler(void)
 {
 	u8 *src;
@@ -60,7 +55,6 @@ void reset_handler(void)
 	len = &__end_bss__ - &__start_bss__;
 	memset(src, 0x00, len);
 
-	scb_init();
 	system_timer_init();
 	main();
 }
