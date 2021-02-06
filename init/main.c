@@ -22,8 +22,6 @@
 #include <m4naos/string.h>
 #include <m4naos/io.h>
 
-#define BIT(n)		(1 << (n))
-
 #define USART_SR	0x00
 #define USART_DR	0x04
 #define USART_BRR	0x08

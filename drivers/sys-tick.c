@@ -42,14 +42,14 @@
 
 u32 jiffies = 0;
 
-void sys_tick_handler(void)
+void __used sys_tick_handler(void)
 {
-	u32 csr;
+	/* u32 csr; */
 
 	/* need to read CSR to clear COUNTFLAG */
-	csr = readl(SYST_BASE, SYST_CSR);
-	csr &= ~SYST_CSR_COUNTFLAG;
-	writel(SYST_BASE, SYST_CSR, csr);
+	/* csr = readl(SYST_BASE, SYST_CSR); */
+	/* csr &= ~SYST_CSR_COUNTFLAG; */
+	/* writel(SYST_BASE, SYST_CSR, csr); */
 
 	jiffies++;
 }
@@ -80,7 +80,9 @@ void system_timer_init(void)
 	 * We know we're just starting out and timer is disabled. So just enable
 	 * it and get it over with.
 	 */
-	csr = SYST_CSR_TICKINT | SYST_CSR_CLKSOURCE;
+	csr = SYST_CSR_CLKSOURCE;
+	writel(SYST_BASE, SYST_CSR, csr);
+	csr |= SYST_CSR_TICKINT;
 	writel(SYST_BASE, SYST_CSR, csr);
 	csr |= SYST_CSR_ENABLE;
 	writel(SYST_BASE, SYST_CSR, csr);
