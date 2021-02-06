@@ -23,15 +23,10 @@
 
 #include "reset.h"
 
-extern u32 __start_vectors__;
-extern u32 __end_vectors__;
-
-extern u32 __start_stack__;
 extern u32 __end_stack__;
-
-extern u32 __start_text__;
 extern u32 __end_text__;
 
+extern u32 __load_data__;
 extern u32 __start_data__;
 extern u32 __end_data__;
 
@@ -40,20 +35,17 @@ extern u32 __end_bss__;
 
 void reset_handler(void)
 {
-	u8 *src;
-	u8 *dst;
-	u8 len;
+	unsigned int *src;
+	unsigned int *dst;
 
 	/* copy data from flash to SRAM */
-	src = (u8 *) &__end_text__;
-	dst = (u8 *) &__start_data__;
-	len = &__end_data__ - &__start_data__;
-	memcpy(dst, src, len);
+	for (src = &__load_data__, dst = &__start_data__;
+		dst < &__end_data__; src++, dst++)
+		*dst = *src;
 
 	/* zero bss */
-	src = (u8 *) &__start_bss__;
-	len = &__end_bss__ - &__start_bss__;
-	memset(src, 0x00, len);
+	while (dst < &__end_bss__)
+		*dst++ = 0;
 
 	system_timer_init();
 	main();

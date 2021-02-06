@@ -1,3 +1,4 @@
+EXTERN(vector_table);
 ENTRY(reset_handler);
 
 MEMORY {
@@ -6,35 +7,32 @@ MEMORY {
 }
 
 SECTIONS {
-	.text : {
-		__start_text__ = .;
-		__start_vectors__ = .;
-		KEEP(*(.vectors))
-		__end_vectors__ = .;
-		*(.text)
-		*(.rodata)
-		*(.ARM.extab* .gnu.linkonce.armextab.*)
-		__end_text__ = .;
+	 .text : {
+	       KEEP(*(.vectors))	/* Vector table */
+	       *(.text*)	/* Program code */
+	       . = ALIGN(4);
+	       *(.rodata*)	/* Read-only data */
+	       . = ALIGN(4);
 	} >flash
 
 	. = ALIGN(4);
+	__end_text__ = .;
 
 	.data : {
-		__start_data__ = .;
-		KEEP(*(.data))
-		PROVIDE(__start_stack__ = ORIGIN(sram));
-		PROVIDE(__end_stack__ = ORIGIN(sram) + LENGTH(sram));
-		__end_data__ = .;
+	      __start_data__ = .;
+	      *(.data*)
+	      . = ALIGN(4);
+	      __end_data__ = .;
 	} >sram AT >flash
-
-	. = ALIGN(4);
+	__load_data__ = LOADADDR(.data);
 
 	.bss : {
 		__start_bss__ = .;
-		*(.bss)
+		*(.bss*)
+		*(COMMON)
+		. = ALIGN(4);
 		__end_bss__ = .;
 	} >sram
-
-	. = ALIGN(4);
 }
 
+PROVIDE(__end_stack__ = ORIGIN(sram) + LENGTH(sram));
