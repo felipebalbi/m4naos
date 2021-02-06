@@ -116,14 +116,14 @@
 
 void reset_handler(void);
 void nmi_handler(void) __weak(default_handler);
-/* void hard_fault_handler(void) __weak(default_handler); */
+void hard_fault_handler(void) __weak(default_handler);
 void mmu_fault_handler(void) __weak(default_handler);
 void bus_fault_handler(void) __weak(default_handler);
 void usage_fault_handler(void) __weak(default_handler);
 void service_call_handler(void) __weak(default_handler);
 void debug_monitor_handler(void) __weak(default_handler);
 void pending_service_handler(void) __weak(default_handler);
-/* void sys_tick_handler(void) __weak(default_handler); */
+void sys_tick_handler(void) __weak(default_handler);
 void irq0_handler(void) __weak(default_handler);
 void irq1_handler(void) __weak(default_handler);
 void irq2_handler(void) __weak(default_handler);

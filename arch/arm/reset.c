@@ -59,10 +59,6 @@ void reset_handler(void)
 	main();
 }
 
-void hard_fault_handler(void)
-{
-}
-
 void default_handler(void)
 {
 	while (true)
