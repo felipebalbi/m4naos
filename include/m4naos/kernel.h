@@ -18,8 +18,8 @@
 #ifndef __M4NAOS_KERNEL_H
 #define __M4NAOS_KERNEL_H
 
-#include <version.h>
 #include <m4naos/types.h>
+#include <m4naos/version.h>
 
 #define __used		__attribute__ ((used))
 #define __packed	__attribute__ ((packed))
