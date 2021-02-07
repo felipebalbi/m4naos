@@ -10,9 +10,9 @@ MEMORY {
 SECTIONS {
 	 .text : {
 	       KEEP(*(.vectors))	/* Vector table */
-	       *(.text*)	/* Program code */
+	       *(.text*)		/* Program code */
 	       . = ALIGN(4);
-	       *(.rodata*)	/* Read-only data */
+	       *(.rodata*)		/* Read-only data */
 	       . = ALIGN(4);
 	} >flash
 
