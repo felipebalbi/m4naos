@@ -27,7 +27,6 @@ int main(void)
 {
 	local_irq_enable();
 
-	uart_init();
 	uart_puts("m4naOS " M4NAOS_VERSION_STR "\n");
 
 	while (true)
