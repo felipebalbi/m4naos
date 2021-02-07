@@ -27,6 +27,10 @@
 extern u32 __end_stack__;
 extern u32 __end_text__;
 
+extern u32 __load_ccm__;
+extern u32 __start_ccm__;
+extern u32 __end_ccm__;
+
 extern u32 __load_data__;
 extern u32 __start_data__;
 extern u32 __end_data__;
@@ -42,6 +46,11 @@ void reset_handler(void)
 	/* copy data from flash to SRAM */
 	for (src = &__load_data__, dst = &__start_data__;
 		dst < &__end_data__; src++, dst++)
+		*dst = *src;
+
+	/* copy ccm data from flash to CCM */
+	for (src = &__load_ccm__, dst = &__start_ccm__;
+		dst < &__end_ccm__; src++, dst++)
 		*dst = *src;
 
 	/* zero bss */

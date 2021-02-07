@@ -46,6 +46,8 @@
 #define __module_initcall	__section(.initcall4)
 #define __late_initcall		__section(.initcall5)
 
+#define __ccm			__section(.ccm)
+
 typedef int (*early_initcall_t)(void);
 typedef int (*core_initcall_t)(void);
 typedef int (*postcore_initcall_t)(void);

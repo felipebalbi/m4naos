@@ -65,6 +65,13 @@ SECTIONS {
 	} >sram AT >flash
 	__load_data__ = LOADADDR(.data);
 
+	.ccm : {
+	      __start_ccm__ = .;
+	      KEEP(*(.ccm))
+	      __end_ccm__ = .;
+	} >ccm AT >flash
+	__load_ccm__ = LOADADDR(.ccm);
+
 	.bss : {
 		__start_bss__ = .;
 		*(.bss*)
