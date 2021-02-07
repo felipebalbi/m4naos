@@ -24,7 +24,7 @@
 #define USART_CR1	0x0c
 #define USART_CR2	0x10
 
-static void fpu_init(void)
+static void system_fpu_init(void)
 {
 	u32 reg;
 
@@ -71,7 +71,7 @@ static void system_uart_init(void)
 
 void machine_init(void)
 {
-	fpu_init();
+	system_fpu_init();
 	system_timer_init();
 	system_uart_init();
 }
