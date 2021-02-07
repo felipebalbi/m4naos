@@ -9,10 +9,48 @@ MEMORY {
 
 SECTIONS {
 	 .text : {
-	       KEEP(*(.vectors))	/* Vector table */
-	       *(.text*)		/* Program code */
+	       /* Vector table */
+	       KEEP(*(.vectors))
+
+	       /* Program code */
 	       . = ALIGN(4);
-	       *(.rodata*)		/* Read-only data */
+	       *(.text*)
+
+	       /* All our initcall levels */
+	       . = ALIGN(4);
+	       __start_early__ = .;
+	       *(.initcall0)
+	       __end_early__ = .;
+
+	       . = ALIGN(4);
+	       __start_core__ = .;
+	       *(.initcall1)
+	       __end_core__ = .;
+
+	       . = ALIGN(4);
+	       __start_postcore__ = .;
+	       *(.initcall2)
+	       __end_postcore__ = .;
+
+	       . = ALIGN(4);
+	       __start_subsys__ = .;
+	       *(.initcall3)
+	       __end_subsys__ = .;
+
+	       . = ALIGN(4);
+	       __start_module__ = .;
+	       *(.initcall4)
+	       __end_module__ = .;
+
+	       . = ALIGN(4);
+	       __start_late__ = .;
+	       *(.initcall5)
+	       __end_late__ = .;
+	
+		/* Read-only data */
+	       . = ALIGN(4);
+	       *(.rodata*)
+
 	       . = ALIGN(4);
 	} >flash
 

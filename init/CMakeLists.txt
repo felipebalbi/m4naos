@@ -1,1 +1,2 @@
-add_sources(main.c)
+add_sources(init.c main.c)
+set(SRCS ${SRCS} PARENT_SCOPE)

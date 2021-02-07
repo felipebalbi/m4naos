@@ -21,11 +21,73 @@
 #include <m4naos/types.h>
 #include <m4naos/version.h>
 
+/*
+ * container - cast a member of a structure out to the containing structure
+ * @p: the pointer to the member.
+ * @t: the type of the container struct this is embedded in.
+ * @m: the name of the member within the struct.
+ */
+#define container(p, t, m) ({					\
+	const typeof(((type *)0)->m ) *____p = (p);		\
+	(type *)((char *)____p - offsetof((t), (m)) );})
+
+#define prefetch(x) __builtin_prefetch(x)
+
 #define __used		__attribute__ ((used))
 #define __packed	__attribute__ ((packed))
 #define __weak(name)	__attribute__ ((weak, alias((#name))))
 #define __section(name)	__attribute__ ((section(#name)))
 #define __vectors	__section(.vectors)
+
+#define __early_initcall	__section(.initcall0)
+#define __core_initcall		__section(.initcall1)
+#define __postcore_initcall	__section(.initcall2)
+#define __subsys_initcall	__section(.initcall3)
+#define __module_initcall	__section(.initcall4)
+#define __late_initcall		__section(.initcall5)
+
+typedef int (*early_initcall_t)(void);
+typedef int (*core_initcall_t)(void);
+typedef int (*postcore_initcall_t)(void);
+typedef int (*subsys_initcall_t)(void);
+typedef int (*module_initcall_t)(void);
+typedef int (*late_initcall_t)(void);
+
+#define level_init(level, fn)					\
+	static level##_initcall_t __##level##_initcall_##fn	\
+	__used __##level##_initcall = fn
+
+#define level_driver_register(level, __drv)			\
+	static int __drv##_init(void)				\
+	{							\
+		return register_driver(&__drv);			\
+	}							\
+	level##_init(__drv##init)
+
+#define early_init(fn)		level_init(early, fn)
+#define core_init(fn)		level_init(core, fn)
+#define postcore_init(fn)	level_init(postcore, fn)
+#define subsys_init(fn)		level_init(subsys, fn)
+#define module_init(fn)		level_init(module, fn)
+#define late_init(fn)		level_init(late, fn)
+
+#define early_driver_register(__drv)				\
+	level_driver_register(early, __drv)
+
+#define core_driver_register(__drv)				\
+	level_driver_register(core, __drv)
+
+#define postcore_driver_register(__drv)				\
+	level_driver_register(postcore, __drv)
+
+#define subsys_driver_register(__drv)				\
+	level_driver_register(subsys, __drv)
+
+#define module_driver_register(__drv)				\
+	level_driver_register(module, __drv)
+
+#define late_driver_register(__drv)				\
+	level_driver_register(late, __drv)
 
 #define NULL	((void *)(0))
 
@@ -37,6 +99,7 @@
 #define NSECS_IN_SEC		1000000000
 
 void system_timer_init(void);
+void kernel_init(void);
 
 /* types */
 

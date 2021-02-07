@@ -19,6 +19,7 @@
 #include <m4naos/io.h>
 #include <m4naos/kernel.h>
 #include <m4naos/rcc.h>
+#include <m4naos/list.h>
 
 #define USART_BRR	0x08
 #define USART_CR1	0x0c
@@ -186,4 +187,6 @@ void machine_init(void)
 	system_fpu_init();
 	system_timer_init();
 	system_uart_init();
+
+	kernel_init();
 }
