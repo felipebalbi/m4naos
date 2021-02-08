@@ -38,7 +38,7 @@ add_subdirectory(drivers)
 
 # Create executable
 add_executable(${PROJECT_NAME} ${SRCS})
-target_link_libraries(${PROJECT_NAME} ${CPU_OPTIONS} -T${LINKER_SCRIPT} -nostartfiles m -nostdlib)
+target_link_libraries(${PROJECT_NAME} ${CPU_OPTIONS} -T${LINKER_SCRIPT})
 set_property(TARGET ${PROJECT_NAME} PROPERTY LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 
 # Custom Targets

@@ -32,5 +32,5 @@ add_compile_options(-Wunknown-pragmas)
 add_compile_options(-fno-delete-null-pointer-checks)
 add_compile_options(-fno-strict-overflow)
 
-add_link_options(-Wl,-Map=m4naos.map)
-add_link_options(-nostdlib)
+add_link_options(-Wl,-Map=m4naos.map -specs=nano.specs)
+# add_link_options(-nostdlib)

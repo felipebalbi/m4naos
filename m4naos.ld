@@ -14,7 +14,9 @@ SECTIONS {
 
 	       /* Program code */
 	       . = ALIGN(4);
-	       *(.text*)
+	       KEEP(*(.text*))
+	       *(.init)
+	       *(.fini)
 
 	       /* All our initcall levels */
 	       . = ALIGN(4);
@@ -52,10 +54,9 @@ SECTIONS {
 	       *(.rodata*)
 
 	       . = ALIGN(4);
-	} >flash
 
-	. = ALIGN(4);
-	__end_text__ = .;
+	       __end_text__ = .;
+	} >flash
 
 	.data : {
 	      __start_data__ = .;
@@ -73,11 +74,13 @@ SECTIONS {
 	__load_ccm__ = LOADADDR(.ccm);
 
 	.bss : {
-		__start_bss__ = .;
+		__bss_start__ = .;
 		*(.bss*)
 		*(COMMON)
 		. = ALIGN(4);
-		__end_bss__ = .;
+		__bss_end__ = .;
+		. = ALIGN(4);
+		_end = .;
 	} >sram
 }
 

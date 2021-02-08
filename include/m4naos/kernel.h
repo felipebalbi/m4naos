@@ -18,6 +18,8 @@
 #ifndef __M4NAOS_KERNEL_H
 #define __M4NAOS_KERNEL_H
 
+#include <sys/cdefs.h>
+
 #include <m4naos/types.h>
 #include <m4naos/version.h>
 
@@ -33,20 +35,18 @@
 
 #define prefetch(x) __builtin_prefetch(x)
 
-#define __used		__attribute__ ((used))
-#define __packed	__attribute__ ((packed))
-#define __weak(name)	__attribute__ ((weak, alias((#name))))
-#define __section(name)	__attribute__ ((section(#name)))
-#define __vectors	__section(.vectors)
+#define __weak		__attribute__ ((weak))
+#define __alias(name)	__attribute__ ((alias(#name)))
+#define __vectors	__section(".vectors")
 
-#define __early_initcall	__section(.initcall0)
-#define __core_initcall		__section(.initcall1)
-#define __postcore_initcall	__section(.initcall2)
-#define __subsys_initcall	__section(.initcall3)
-#define __module_initcall	__section(.initcall4)
-#define __late_initcall		__section(.initcall5)
+#define __early_initcall	__section(".initcall0")
+#define __core_initcall		__section(".initcall1")
+#define __postcore_initcall	__section(".initcall2")
+#define __subsys_initcall	__section(".initcall3")
+#define __module_initcall	__section(".initcall4")
+#define __late_initcall		__section(".initcall5")
 
-#define __ccm			__section(.ccm)
+#define __ccm			__section(".ccm")
 
 typedef int (*early_initcall_t)(void);
 typedef int (*core_initcall_t)(void);
@@ -90,8 +90,6 @@ typedef int (*late_initcall_t)(void);
 
 #define late_driver_register(__drv)				\
 	level_driver_register(late, __drv)
-
-#define NULL	((void *)(0))
 
 #define false	0
 #define true	!false

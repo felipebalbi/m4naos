@@ -35,8 +35,10 @@ extern u32 __load_data__;
 extern u32 __start_data__;
 extern u32 __end_data__;
 
-extern u32 __start_bss__;
-extern u32 __end_bss__;
+extern u32 __bss_start__;
+extern u32 __bss_end__;
+
+extern void __libc_init_array(void);
 
 void reset_handler(void)
 {
@@ -54,10 +56,11 @@ void reset_handler(void)
 		*dst = *src;
 
 	/* zero bss */
-	while (dst < &__end_bss__)
+	while (dst < &__bss_end__)
 		*dst++ = 0;
 
 	machine_init();
+	__libc_init_array();
 	main();
 }
 
