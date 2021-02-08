@@ -25,7 +25,6 @@
 #include "reset.h"
 
 extern u32 __end_stack__;
-extern u32 __end_text__;
 
 extern u32 __load_ccm__;
 extern u32 __start_ccm__;

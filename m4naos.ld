@@ -54,8 +54,6 @@ SECTIONS {
 	       *(.rodata*)
 
 	       . = ALIGN(4);
-
-	       __end_text__ = .;
 	} >flash
 
 	.data : {
