@@ -6,6 +6,9 @@
 
 register char *stack_ptr asm("sp");
 
+extern u32 __stack_min_size__;
+extern u32 __end_stack__;
+
 caddr_t __weak _sbrk(int incr)
 {
 	extern char _end;
@@ -17,12 +20,10 @@ caddr_t __weak _sbrk(int incr)
 		return (caddr_t) -1;
 	}
 
-#if 0
 	if (heap_end + incr >= (char *)(&__end_stack__ - &__stack_min_size__)) {
 		errno = ENOMEM;
 		return (caddr_t) -1;
 	}
-#endif
 
 	heap_end += incr;
 

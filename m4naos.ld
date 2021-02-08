@@ -1,6 +1,9 @@
 EXTERN(vector_table);
 ENTRY(reset_handler);
 
+__heap_min_size__	= 0x200;
+__stack_min_size__	= 0x400;
+
 MEMORY {
        flash(rx) : ORIGIN = 0x08000000, LENGTH = 1024K
        sram(rwx) : ORIGIN = 0x20000000, LENGTH = 128K
@@ -78,8 +81,29 @@ SECTIONS {
 		. = ALIGN(4);
 		__bss_end__ = .;
 		. = ALIGN(4);
-		_end = .;
 	} >sram
+
+	/* User_heap_stack section, used to check that there is enough RAM left */
+	._user_heap_stack :
+	{
+		. = ALIGN(8);
+		PROVIDE ( _end = . );
+		. = . + __heap_min_size__;
+		. = . + __stack_min_size__;
+		. = ALIGN(8);
+	} >sram
+
+	/* Remove unnecessary lib info */
+	/DISCARD/ :
+	{
+		libc.a ( * )
+		libm.a ( * )
+		libgcc.a ( * )
+	}
+
+	.ARM.attributes 0 : {
+		*(.ARM.attributes)
+	}
 }
 
 PROVIDE(__end_stack__ = ORIGIN(sram) + LENGTH(sram));
