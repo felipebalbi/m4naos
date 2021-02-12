@@ -15,6 +15,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <m4naos/hardware.h>
 #include <m4naos/io.h>
 #include <m4naos/kernel.h>
@@ -87,3 +88,11 @@ void system_timer_init(void)
 	csr |= SYST_CSR_ENABLE;
 	writel(SYST_BASE, SYST_CSR, csr);
 }
+
+static int timer_init(void)
+{
+	printf("timer init\n");
+
+	return 0;
+}
+subsys_init(timer_init);

@@ -15,6 +15,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <m4naos/hardware.h>
 #include <m4naos/rcc.h>
 #include <m4naos/io.h>
@@ -38,3 +39,11 @@ void clk_disable(u32 offset, u32 mask)
 	reg &= ~mask;
 	writel(AHB1_RCC, offset, reg);
 }
+
+static int rcc_init(void)
+{
+	printf("rcc_init\n");
+
+	return 0;
+}
+postcore_init(rcc_init);

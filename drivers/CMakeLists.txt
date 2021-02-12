@@ -1,2 +1,7 @@
-add_sources(sys-tick.c rcc.c uart.c base.c)
+add_subdirectory(base)
+add_subdirectory(pm)
+add_subdirectory(clk)
+add_subdirectory(timer)
+add_subdirectory(tty)
+
 set(SRCS ${SRCS} PARENT_SCOPE)

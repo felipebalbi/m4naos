@@ -15,6 +15,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <m4naos/hardware.h>
 #include <m4naos/kernel.h>
 #include <m4naos/io.h>
@@ -51,19 +52,17 @@
 
 static inline void pwr_writel(u32 offset, u32 value)
 {
-	writel(PWR_BASE, offset, value);
+	writel(APB1_PWR, offset, value);
 }
 
 static inline u32 pwr_readl(u32 offset)
 {
-	return readl(PWR_BASE, offset);
+	return readl(APB1_PWR, offset);
 }
 
 void system_volt_scale_init(void)
 {
 	u32 reg;
-
-	clk_enable(PWR);
 
 	/* Select 1.8V */
 	reg = pwr_readl(PWR_CR);
@@ -71,3 +70,11 @@ void system_volt_scale_init(void)
 	reg |= PWR_CR_VOS_1V8;
 	pwr_writel(PWR_CR, reg);
 }
+
+static int pwr_init(void)
+{
+	printf("pwr_init\n");
+
+	return 0;
+}
+core_init(pwr_init);

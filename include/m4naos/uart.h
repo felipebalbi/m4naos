@@ -20,7 +20,6 @@
 
 #include <m4naos/kernel.h>
 
-void uart_init(void);
 void uart_putch(char c);
 void uart_puts(const char *str);
 

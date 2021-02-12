@@ -15,6 +15,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <m4naos/kernel.h>
 #include <m4naos/irq.h>
 #include <m4naos/io.h>
@@ -43,4 +44,13 @@ void uart_putch(char c)
 
 void uart_puts(const char *str)
 {
-	__uart_puts(str);}
+	__uart_puts(str);
+}
+
+static int uart_init(void)
+{
+	printf("uart_init\n");
+
+	return 0;
+}
+module_init(uart_init);
