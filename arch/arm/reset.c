@@ -58,8 +58,8 @@ void reset_handler(void)
 	while (dst < &__bss_end__)
 		*dst++ = 0;
 
-	machine_init();
 	__libc_init_array();
+	machine_init();
 	main();
 }
 
