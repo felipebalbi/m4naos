@@ -9,7 +9,7 @@ register char *stack_ptr asm("sp");
 extern u32 __stack_min_size__;
 extern u32 __end_stack__;
 
-caddr_t __weak _sbrk(int incr)
+caddr_t __used _sbrk(int incr)
 {
 	extern char _end;
 	static char *heap_end = &_end ;
@@ -30,34 +30,34 @@ caddr_t __weak _sbrk(int incr)
 	return (caddr_t) prev_heap_end;
 }
 
-int __weak _close(int fd __unused)
+int __used _close(int fd __unused)
 {
 	return -1;
 }
 
-int __weak _fstat(int fd __unused, struct stat *st)
+int __used _fstat(int fd __unused, struct stat *st)
 {
 	st->st_mode = S_IFCHR;
 
 	return 0;
 }
 
-int __weak _isatty(int fd __unused)
+int __used _isatty(int fd __unused)
 {
 	return 1;
 }
 
-int __weak _lseek(int fd __unused, int ptr __unused, int dir __unused)
+int __used _lseek(int fd __unused, int ptr __unused, int dir __unused)
 {
 	return 0;
 }
 
-int __weak _read(int fd __unused, char *ptr __unused, int len __unused)
+int __used _read(int fd __unused, char *ptr __unused, int len __unused)
 {
 	return 0;
 }
 
-int __weak _write(int file __unused, char *str, int len)
+int __used _write(int file __unused, char *str, int len)
 {
 	int i;
 
@@ -67,20 +67,19 @@ int __weak _write(int file __unused, char *str, int len)
 	return 0;
 }
 
-void __weak _exit(int status __unused)
+void __used _exit(int status __unused)
 {
 	for (;;);
 }
 
-int __weak _kill(int pid __unused, int sig __unused)
+int __used _kill(int pid __unused, int sig __unused)
 {
 	errno = EINVAL;
 
 	return -1;
 }
 
-int __weak _getpid(void)
+int __used _getpid(void)
 {
 	return 1;
 }
-
