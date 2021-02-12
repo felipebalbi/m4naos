@@ -73,7 +73,7 @@ void system_volt_scale_init(void)
 
 static int pwr_init(void)
 {
-	printf("pwr_init\n");
+	printf("core: %s\n", __func__);
 
 	return 0;
 }

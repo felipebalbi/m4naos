@@ -91,7 +91,7 @@ void system_timer_init(void)
 
 static int timer_init(void)
 {
-	printf("timer init\n");
+	printf("subsys: %s\n", __func__);
 
 	return 0;
 }

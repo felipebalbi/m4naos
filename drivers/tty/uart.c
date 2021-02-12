@@ -49,7 +49,7 @@ void uart_puts(const char *str)
 
 static int uart_init(void)
 {
-	printf("uart_init\n");
+	printf("module: %s\n", __func__);
 
 	return 0;
 }

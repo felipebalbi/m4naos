@@ -42,7 +42,7 @@ void clk_disable(u32 offset, u32 mask)
 
 static int rcc_init(void)
 {
-	printf("rcc_init\n");
+	printf("postcore: %s\n", __func__);
 
 	return 0;
 }
