@@ -45,13 +45,6 @@ u32 jiffies = 0;
 
 void __used sys_tick_handler(void)
 {
-	/* u32 csr; */
-
-	/* need to read CSR to clear COUNTFLAG */
-	/* csr = readl(SYST_BASE, SYST_CSR); */
-	/* csr &= ~SYST_CSR_COUNTFLAG; */
-	/* writel(SYST_BASE, SYST_CSR, csr); */
-
 	jiffies++;
 }
 
@@ -61,12 +54,12 @@ void system_timer_init(void)
 	u32 period;
 	u32 csr;
 
-	/* assuming 16MHz clock */
-	period = div_round_up(NSECS_IN_SEC, 16000000);
+	/* assuming 168MHz clock */
+	period = div_round_up(NSECS_IN_SEC, 168000000);
 
 	/*
 	 * We want a tick every 1ms (aproximately), so let's calculate how many
-	 * periods of a 16MHz clock it takes to aproximate 1ms.\
+	 * periods of a 168MHz clock it takes to aproximate 1ms.
 	 *
 	 * We want this to truncate!!
 	 */
