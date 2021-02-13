@@ -1,3 +1,4 @@
+/* SPDX-License-Identifier: GPL-2.0 */
 /*
  * This file is part of M4naos
  *
@@ -14,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* This file is taken from the Linux Kernel */
 
 #ifndef __M4NAOS_LIST_H
 #define __M4NAOS_LIST_H
@@ -55,7 +58,7 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
  * the prev/next entries already!
  */
 static inline void __list_add(struct list_head *new,
-			      struct list_head *prev, struct list_head *next)
+		struct list_head *prev, struct list_head *next)
 {
 	next->prev = new;
 	new->next = next;
@@ -75,7 +78,6 @@ static inline void list_add(struct list_head *new, struct list_head *head)
 {
 	__list_add(new, head, head->next);
 }
-
 
 /**
  * list_add_tail - add a new entry
@@ -249,8 +251,7 @@ static inline void __list_cut_position(struct list_head *list,
  *
  */
 static inline void list_cut_position(struct list_head *list,
-				     struct list_head *head,
-				     struct list_head *entry)
+		struct list_head *head, struct list_head *entry)
 {
 	if (list_empty(head))
 		return;
@@ -263,7 +264,7 @@ static inline void list_cut_position(struct list_head *list,
 }
 
 static inline void __list_splice(const struct list_head *list,
-				 struct list_head *prev, struct list_head *next)
+		struct list_head *prev, struct list_head *next)
 {
 	struct list_head *first = list->next;
 	struct list_head *last = list->prev;
@@ -281,7 +282,7 @@ static inline void __list_splice(const struct list_head *list,
  * @head: the place to add it in the first list.
  */
 static inline void list_splice(const struct list_head *list,
-			       struct list_head *head)
+		struct list_head *head)
 {
 	if (!list_empty(list))
 		__list_splice(list, head, head->next);
@@ -293,7 +294,7 @@ static inline void list_splice(const struct list_head *list,
  * @head: the place to add it in the first list.
  */
 static inline void list_splice_tail(struct list_head *list,
-				    struct list_head *head)
+		struct list_head *head)
 {
 	if (!list_empty(list))
 		__list_splice(list, head->prev, head);
@@ -307,7 +308,7 @@ static inline void list_splice_tail(struct list_head *list,
  * The list at @list is reinitialised
  */
 static inline void list_splice_init(struct list_head *list,
-				    struct list_head *head)
+		struct list_head *head)
 {
 	if (!list_empty(list)) {
 		__list_splice(list, head, head->next);
@@ -324,7 +325,7 @@ static inline void list_splice_init(struct list_head *list,
  * The list at @list is reinitialised
  */
 static inline void list_splice_tail_init(struct list_head *list,
-					 struct list_head *head)
+		struct list_head *head)
 {
 	if (!list_empty(list)) {
 		__list_splice(list, head->prev, head);
