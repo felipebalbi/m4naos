@@ -1,3 +1,5 @@
+![Build](https://github.com/felipebalbi/m4naos/workflows/CMake/badge.svg)
+
 # Introduction
 
 m4naOS is a fully Free (as in **speech**) implementation of a toy
