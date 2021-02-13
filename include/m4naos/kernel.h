@@ -38,6 +38,8 @@
 #define __weak		__attribute__ ((weak))
 #define __alias(name)	__attribute__ ((alias(#name)))
 #define __vectors	__section(".vectors")
+#define __iomem
+#define __force
 
 #define __early_initcall	__section(".initcall0")
 #define __core_initcall		__section(".initcall1")
@@ -110,5 +112,7 @@ typedef unsigned long	__u32;
 typedef signed char	__s8;
 typedef signed short	__s16;
 typedef signed long	__s32;
+
+typedef __u32		phys_addr_t;
 
 #endif /* __M4NAOS_KERNEL_H */

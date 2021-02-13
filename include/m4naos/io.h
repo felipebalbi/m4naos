@@ -21,6 +21,11 @@
 #include <m4naos/kernel.h>
 #include <m4naos/hardware.h>
 
+static inline void __iomem *ioremap(phys_addr_t offset)
+{
+	return (void __iomem *)(unsigned long) offset;
+}
+
 static inline void writeb_relaxed(u32 base,
 		u32 offset, u8 value)
 {
