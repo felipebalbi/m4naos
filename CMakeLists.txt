@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
 include("cmake/toolchain.cmake")
 include("cmake/add_sources.cmake")
@@ -29,17 +29,18 @@ endif()
 include_directories(include)
 link_directories(${CMAKE_SOURCE_DIR})
 
+# Create executable
+add_executable(${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} ${CPU_OPTIONS} -T${LINKER_SCRIPT})
+set_property(TARGET ${PROJECT_NAME} PROPERTY
+  LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
+
 # Visit every subdirectory
 add_subdirectory(arch)
 add_subdirectory(kernel)
 add_subdirectory(init)
 add_subdirectory(lib)
 add_subdirectory(drivers)
-
-# Create executable
-add_executable(${PROJECT_NAME} ${SRCS})
-target_link_libraries(${PROJECT_NAME} ${CPU_OPTIONS} -T${LINKER_SCRIPT})
-set_property(TARGET ${PROJECT_NAME} PROPERTY LINK_DEPENDS ${CMAKE_SOURCE_DIR}/${LINKER_SCRIPT})
 
 # Custom Targets
 add_custom_command(OUTPUT ${PROJECT_NAME}.bin DEPENDS ${PROJECT_NAME}

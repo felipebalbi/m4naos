@@ -1,15 +1,16 @@
-# Macro to add sources to the list of sources
-macro (add_sources)
-    file (RELATIVE_PATH _relPath "${PROJECT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-    foreach (_src ${ARGN})
-        if (_relPath)
-            list(APPEND SRCS "${_relPath}/${_src}")
-        else()
-            list(APPEND SRCS "${_src}")
-        endif()
-    endforeach()
-    if (_relPath)
-        # propagate SRCS to parent directory
-        set(SRCS ${SRCS} PARENT_SCOPE)
+# Function to add sources to the list of sources
+function(add_sources)
+  foreach(arg ${ARGV})
+    if(IS_DIRECTORY ${arg})
+      message(FATAL_ERROR "`add_sources()` can't be used on a directory")
     endif()
-endmacro()
+  target_sources(${PROJECT_NAME} PRIVATE ${arg})
+  endforeach()
+endfunction()
+
+# Function to conditionally enable compilation and linking of sources
+function(add_sources_ifdef config)
+  if(${${config}})
+    add_sources(${ARGN})
+  endif()
+endfunction()
