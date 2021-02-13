@@ -17,8 +17,8 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __INCLUDE_VERSION_H
-#define __INCLUDE_VERSION_H
+#ifndef __M4NAOS_VERSION_H
+#define __M4NAOS_VERSION_H
 
 #define M4NAOS_VERSION	((M4NAOS_VERSION_MAJOR << 8)	|\
 			 (M4NAOS_VERSION_MINOR << 4)	|\
@@ -26,7 +26,8 @@
 
 #define M4NAOS_VERSION_STR M4NAOS_VERSION_MAJOR_STR "."	\
 			M4NAOS_VERSION_MINOR_STR "."	\
-			M4NAOS_VERSION_PATCH_STR
+			M4NAOS_VERSION_PATCH_STR "-"	\
+			M4NAOS_VERSION_GIT_STR
 
-#endif /* __INCLUDE_VERSION_H */
+#endif /* __M4NAOS_VERSION_H */
 
