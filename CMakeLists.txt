@@ -61,3 +61,4 @@ add_custom_command(OUTPUT ${PROJECT_NAME}.sym DEPENDS ${PROJECT_NAME}
 add_custom_target(bin ALL DEPENDS ${PROJECT_NAME}.bin)
 add_custom_target(lst ALL DEPENDS ${PROJECT_NAME}.lst)
 add_custom_target(sym ALL DEPENDS ${PROJECT_NAME}.sym)
+add_custom_target(tags COMMAND git ls-files ${PROJECT_SOURCE_DIR} | etags -)
