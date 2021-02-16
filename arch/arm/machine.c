@@ -43,7 +43,7 @@
 #define RCC_CR_PLL2SON		BIT(26)
 #define RCC_CR_PLL2SRDY		BIT(27)
 
-#define RCC_PLLCFGR_MASK	0xf437fff
+#define RCC_PLLCFGR_MASK	0xf0bc8000
 #define RCC_PLLCFGR_PLLM(n)	((n) & 0x3f)
 #define RCC_PLLCFGR_PLLN(n)	(((n) & 0x1ff) << 6)
 #define RCC_PLLCFGR_PLLP(n)	(((n) & 0x03) << 16)
