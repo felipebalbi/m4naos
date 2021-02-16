@@ -51,11 +51,6 @@ void reset_handler(void)
 		dst < &__end_data__; src++, dst++)
 		*dst = *src;
 
-	/* copy ccm data from flash to CCM */
-	for (src = &__load_ccm__, dst = &__start_ccm__;
-		dst < &__end_ccm__; src++, dst++)
-		*dst = *src;
-
 	/* zero bss */
 	while (dst < &__bss_end__)
 		*dst++ = 0;

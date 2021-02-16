@@ -23,8 +23,8 @@
 #include <m4naos/device.h>
 #include <m4naos/driver.h>
 
-static __ccm LIST_HEAD(drivers_list);
-static __ccm LIST_HEAD(devices_list);
+static LIST_HEAD(drivers_list);
+static LIST_HEAD(devices_list);
 
 int register_device(struct device *dev)
 {
