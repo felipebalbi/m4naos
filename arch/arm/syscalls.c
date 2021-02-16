@@ -83,7 +83,7 @@ int __used _write(int file __unused, char *str, int len)
 	for (i = 0; i < len; i++)
 		uart_putch(*str++);
 
-	return 0;
+	return len;
 }
 
 void __used _exit(int status __unused)
