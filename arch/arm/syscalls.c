@@ -25,8 +25,14 @@
 
 register char *stack_ptr asm("sp");
 
-extern u32 __stack_min_size__;
-extern u32 __end_stack__;
+static inline char *__get_stack_ptr(void)
+{
+	register char *result;
+
+	asm ("mrs %0, msp\n" : "=r" (result) );
+
+	return result;
+}
 
 caddr_t __used _sbrk(int incr)
 {
@@ -34,15 +40,12 @@ caddr_t __used _sbrk(int incr)
 	static char *heap_end = &_end ;
 	char *prev_heap_end = heap_end;
 
-	if (heap_end + incr > stack_ptr) {
+	if (heap_end + incr > __get_stack_ptr()) {
 		errno = ENOMEM;
 		return (caddr_t) -1;
 	}
 
-	if (heap_end + incr >= (char *)(&__end_stack__ - &__stack_min_size__)) {
-		errno = ENOMEM;
-		return (caddr_t) -1;
-	}
+	/* TODO: should we make sure heap won't touch the stack? */
 
 	heap_end += incr;
 
