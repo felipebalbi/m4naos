@@ -51,7 +51,7 @@
 #define RCC_PLLCFGR_PLLQ(n)	(((n) & 0x0f) << 24)
 
 #define RCC_CFGR_SW(n)		((n) & 0x03)
-#define RCC_CFGR_SWS(n)		(((n) & 0x03) << 2)
+#define RCC_CFGR_SWS(n)		(((n) & (0x03 << 2)) >> 2)
 #define RCC_CFGR_HPRE(n)	(((n) & 0x0f) << 4)
 #define RCC_CFGR_PPRE1(n)	(((n) & 0x07) << 10)
 #define RCC_CFGR_PPRE2(n)	(((n) & 0x07) << 13)
@@ -106,18 +106,10 @@ static void system_clock_init(void)
 
 	reg = readl(AHB1_RCC, RCC_PLLCFGR);
 	reg &= ~RCC_PLLCFGR_MASK;
-	reg |= RCC_PLLCFGR_PLLM(8) | RCC_PLLCFGR_PLLN(336) |
-		RCC_PLLCFGR_PLLP(2) | RCC_PLLCFGR_PLLQ(7) |
+	reg |= RCC_PLLCFGR_PLLM(4) | RCC_PLLCFGR_PLLN(336) |
+		RCC_PLLCFGR_PLLP(1) | RCC_PLLCFGR_PLLQ(14) |
 		RCC_PLLCFGR_PLLSRC;
 	writel(AHB1_RCC, RCC_PLLCFGR, reg);
-
-	/* setup prescalers */
-	reg = readl(AHB1_RCC, RCC_CFGR);
-	reg &= ~(RCC_CFGR_HPRE_MASK | RCC_CFGR_PPRE1_MASK |
-			RCC_CFGR_PPRE2_MASK);
-	reg |= RCC_CFGR_PPRE1(RCC_CFGR_PPRE_DIV4) |
-		RCC_CFGR_PPRE2(RCC_CFGR_PPRE_DIV2);
-	writel(AHB1_RCC, RCC_CFGR, reg);
 
 	/* enable PLL */
 	reg = readl(AHB1_RCC, RCC_CR);
@@ -128,14 +120,28 @@ static void system_clock_init(void)
 	while (!(reg & RCC_CR_PLLRDY))
 		reg = readl(AHB1_RCC, RCC_CR);
 
+	/* setup prescalers */
+	reg &= ~(RCC_CFGR_HPRE_MASK | RCC_CFGR_PPRE1_MASK |
+			RCC_CFGR_PPRE2_MASK);
+	reg |= RCC_CFGR_PPRE1(RCC_CFGR_PPRE_DIV4) |
+		RCC_CFGR_PPRE2(RCC_CFGR_PPRE_DIV2);
+	writel(AHB1_RCC, RCC_CFGR, reg);
+
+	/* Enable Icache and Dcache, waitstate = 5 */
+	writel(AHB1_FLASH, 0, BIT(10) | BIT(9) | 5);
+
 	/* set sysclk source to PLL */
 	reg = readl(AHB1_RCC, RCC_CFGR);
 	reg &= ~RCC_CFGR_SW_MASK;
 	reg |= RCC_CFGR_SW(RCC_CFGR_SW_PLL);
 	writel(AHB1_RCC, RCC_CFGR, reg);
 
-	while (!(RCC_CFGR_SWS(reg) != RCC_CFGR_SWS(RCC_CFGR_SW_PLL)))
+	while (RCC_CFGR_SWS(reg) != 2)
 		reg = readl(AHB1_RCC, RCC_CFGR);
+
+	reg = readl(AHB1_RCC, RCC_CR);
+	reg &= ~RCC_CR_HSION;
+	writel(AHB1_RCC, RCC_CR, reg);
 }
 
 static void system_fpu_init(void)
