@@ -179,7 +179,7 @@ static void system_uart_init(void)
 
 	/*
 	 * According to Table 137, page 982 on STM32F405 reference manual, the
-	 * following results in a baud rate of 2Mbps with an error of 0%.
+	 * following results in a baud rate of 10.5Mbps with an error of 0%.
 	 */
 	reg = 0x10; /* 1.0 */
 	writel(APB2_USART1, USART_BRR, reg);
