@@ -17,10 +17,18 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <m4naos/hardware.h>
 #include <m4naos/rcc.h>
 #include <m4naos/io.h>
+
+struct rcc {
+	void __iomem *base;
+};
+
+struct rcc *the_rcc;
 
 int clk_enable(u32 offset, u32 mask)
 {
@@ -44,8 +52,32 @@ void clk_disable(u32 offset, u32 mask)
 
 static int rcc_init(void)
 {
-	printf("postcore: %s\n", __func__);
+	struct rcc *rcc;
+	int ret;
+
+	rcc = malloc(sizeof(*rcc));
+	if (!rcc) {
+		ret = -ENOMEM;
+		goto err0;
+	}
+
+	rcc->base = ioremap(AHB1_RCC);
+	if (!rcc->base) {
+		ret = -ENOMEM;
+		goto err1;
+	}
+
+	the_rcc = rcc;
+
+	printf("core: %s: rcc %p base %p\n",
+			__func__, rcc, rcc->base);
 
 	return 0;
+
+err1:
+	free(rcc);
+
+err0:
+	return ret;
 }
-postcore_init(rcc_init);
+core_init(rcc_init);
