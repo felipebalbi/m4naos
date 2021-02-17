@@ -23,8 +23,6 @@
 #include <m4naos/kernel.h>
 #include <m4naos/uart.h>
 
-register char *stack_ptr asm("sp");
-
 static inline char *__get_stack_ptr(void)
 {
 	register char *result;
