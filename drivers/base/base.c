@@ -33,7 +33,7 @@
 
 static LIST_HEAD(drivers_list);
 
-static const struct device devices[] __used = {
+static struct device devices[] __ccm = {
 	DECLARE_DEVICE(APB1_TIM2, "timer2"),
 	DECLARE_DEVICE(APB1_TIM3, "timer3"),
 	DECLARE_DEVICE(APB1_TIM4, "timer4"),
@@ -109,12 +109,12 @@ int register_driver(struct driver *drv)
 	return 0;
 }
 
-int driver_match(const struct device *dev, struct driver *drv)
+int driver_match(struct device *dev, struct driver *drv)
 {
 	return !!strstr(dev->name, drv->name);
 }
 
-int driver_probe(const struct device *dev, struct driver *drv)
+int driver_probe(struct device *dev, struct driver *drv)
 {
 	return drv->probe(dev);
 }
@@ -125,7 +125,7 @@ int drivers_start(void)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(devices); i++) {
-		const struct device *dev = &devices[i];
+		struct device *dev = &devices[i];
 		struct driver *drv;
 
 		list_for_each_entry(drv, &drivers_list, list) {

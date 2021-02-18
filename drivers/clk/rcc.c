@@ -53,7 +53,7 @@ void clk_disable(u32 offset, u32 mask)
 	writel(AHB1_RCC, offset, reg);
 }
 
-static int rcc_probe(const struct device *dev)
+static int rcc_probe(struct device *dev)
 {
 	struct rcc *rcc;
 	int ret;
