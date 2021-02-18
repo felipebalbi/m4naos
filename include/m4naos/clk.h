@@ -17,30 +17,14 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __M4NAOS_DEVICE_H
-#define __M4NAOS_DEVICE_H
+#ifndef __M4NAOS_CLK_H
+#define __M4NAOS_CLK_H
 
-#include <m4naos/clk.h>
 #include <m4naos/kernel.h>
-#include <m4naos/list.h>
-#include <m4naos/reset.h>
 
-struct device {
-	struct reset *reset;
-	struct clk *clk;
-	char name[16];
-	u32 base;
-	void *drvdata;
+struct clk {
+	u16 offset;
+	u8 bit;
 };
 
-static inline void dev_set_drvdata(struct device *dev, void *data)
-{
-	dev->drvdata = data;
-}
-
-static inline void *dev_get_drvdata(struct device *dev)
-{
-	return dev->drvdata;
-}
-
-#endif /* __M4NAOS_DEVICE_H */
+#endif /* __M4NAOS_CLK_H */
