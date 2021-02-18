@@ -24,23 +24,9 @@
 #include <m4naos/list.h>
 
 struct device {
-	struct list_head list;
-	struct driver *drv;
+	u32 base;
 	char name[16];
-	void *drvdata;
 };
-
-static inline void dev_set_drvdata(struct device *dev, void *data)
-{
-	dev->drvdata = data;
-}
-
-static inline void *dev_get_drvdata(struct device *dev)
-{
-	return dev->drvdata;
-}
-
-int register_device(struct device *drv);
 
 #endif /* __M4NAOS_DEVICE_H */
 

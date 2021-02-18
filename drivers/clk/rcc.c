@@ -20,11 +20,14 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <m4naos/driver.h>
+#include <m4naos/device.h>
 #include <m4naos/hardware.h>
 #include <m4naos/rcc.h>
 #include <m4naos/io.h>
 
 struct rcc {
+	const struct device *dev;
 	void __iomem *base;
 };
 
@@ -50,7 +53,7 @@ void clk_disable(u32 offset, u32 mask)
 	writel(AHB1_RCC, offset, reg);
 }
 
-static int rcc_init(void)
+static int rcc_probe(const struct device *dev)
 {
 	struct rcc *rcc;
 	int ret;
@@ -61,7 +64,9 @@ static int rcc_init(void)
 		goto err0;
 	}
 
-	rcc->base = ioremap(AHB1_RCC);
+	rcc->dev = dev;
+
+	rcc->base = ioremap(dev->base);
 	if (!rcc->base) {
 		ret = -ENOMEM;
 		goto err1;
@@ -79,5 +84,15 @@ err1:
 
 err0:
 	return ret;
+}
+
+static struct driver rcc_driver = {
+	.name		= "rcc",
+	.probe		= rcc_probe,
+};
+
+static int rcc_init(void)
+{
+	return register_driver(&rcc_driver);
 }
 core_init(rcc_init);

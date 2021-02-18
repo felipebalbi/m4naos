@@ -28,13 +28,14 @@ struct device;
 struct driver {
 	struct list_head list;
 	char name[16];
-	int (*probe)(struct device *);
-	void *priv;
+	int (*probe)(const struct device *);
 };
 
 int register_driver(struct driver *drv);
-int driver_match(struct device *dev, struct driver *drv);
-int driver_probe(struct device *dev, struct driver *drv);
+int driver_match(const struct device *dev, struct driver *drv);
+int driver_probe(const struct device *dev, struct driver *drv);
+
+int drivers_start(void);
 
 #endif /* __M4NAOS_DRIVER_H */
 
