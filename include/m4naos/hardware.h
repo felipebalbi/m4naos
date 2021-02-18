@@ -23,7 +23,7 @@
 #include <m4naos/types.h>
 
 /* Memory Map */
-#define APB1_BASE		0x40000000
+#define APB1_BASE		0x40000000UL
 #define APB1_TIM2		(APB1_BASE + 0x0000)
 #define APB1_TIM3		(APB1_BASE + 0x0400)
 #define APB1_TIM4		(APB1_BASE + 0x0800)
@@ -52,7 +52,7 @@
 #define APB1_PWR		(APB1_BASE + 0x7000)
 #define APB1_DAC		(APB1_BASE + 0x7400)
 
-#define APB2_BASE		0x40010000
+#define APB2_BASE		0x40010000UL
 #define APB2_TIM1		(APB2_BASE + 0x0000)
 #define APB2_TIM8		(APB2_BASE + 0x0400)
 #define APB2_USART1		(APB2_BASE + 0x1000)
@@ -66,7 +66,7 @@
 #define APB2_TIM10		(APB2_BASE + 0x4400)
 #define APB2_TIM11		(APB2_BASE + 0x4800)
 
-#define AHB1_BASE		0x40020000
+#define AHB1_BASE		0x40020000UL
 #define AHB1_USB_OTG_HS		(AHB1_BASE + 0x0000)
 #define AHB1_ETHERNET_MAC	(AHB1_BASE + 0x8000)
 #define AHB1_DMA2		(AHB1_BASE + 0x6400)
@@ -85,11 +85,12 @@
 #define AHB1_GPIOB		(AHB1_BASE + 0x0400)
 #define AHB1_GPIOA		(AHB1_BASE + 0x0000)
 
-#define AHB2_BASE		0x50050000
-#define AHB2_DCMI		(AHB2_BASE + 0x0000)
-#define AHB2_RNG		(AHB2_BASE + 0x0800)
+#define AHB2_BASE		0x50000000UL
+#define AHB2_USB_OTG_FS		(AHB2_BASE + 0x0000)
+#define AHB2_DCMI		(AHB2_BASE + 0x50000)
+#define AHB2_RNG		(AHB2_BASE + 0x60800)
 
-#define AHB3_BASE		0x60000000
+#define AHB3_BASE		0x60000000UL
 #define AHB3_FSMC_BANK1		(AHB3_BASE + 0x00000000)
 #define AHB3_FSMC_BANK2		(AHB3_BASE + 0x10000000)
 #define AHB3_FSMC_BANK3		(AHB3_BASE + 0x20000000)
@@ -97,7 +98,7 @@
 #define AHB3_FSMC_CTRL		(AHB3_BASE + 0x40000000)
 
 /* System Control Space */
-#define SCS_BASE		0xe000e000
+#define SCS_BASE		0xe000e000UL
 
 /* System Timer */
 #define SYST_BASE		0xe000e010
