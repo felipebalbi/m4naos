@@ -32,8 +32,8 @@
  * @m: the name of the member within the struct.
  */
 #define container(p, t, m) ({					\
-	const typeof(((type *)0)->m ) *____p = (p);		\
-	(type *)((char *)____p - offsetof((t), (m)) );})
+	const typeof(((t *)0)->m ) *____p = (p);		\
+	(t *)((char *)____p - offsetof(t, m) );})
 
 #define prefetch(x) __builtin_prefetch(x)
 
