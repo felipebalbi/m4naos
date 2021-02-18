@@ -65,6 +65,7 @@ static int rcc_probe(struct device *dev)
 	}
 
 	rcc->dev = dev;
+	dev_set_drvdata(dev, rcc);
 
 	rcc->base = ioremap(dev->base);
 	if (!rcc->base) {

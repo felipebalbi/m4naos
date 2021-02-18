@@ -26,7 +26,17 @@
 struct device {
 	u32 base;
 	char name[16];
+	void *drvdata;
 };
 
-#endif /* __M4NAOS_DEVICE_H */
+static inline void dev_set_drvdata(struct device *dev, void *data)
+{
+	dev->drvdata = data;
+}
 
+static inline void *dev_get_drvdata(struct device *dev)
+{
+	return dev->drvdata;
+}
+
+#endif /* __M4NAOS_DEVICE_H */
