@@ -105,7 +105,7 @@ static void system_clock_init(void)
 		reg = readl(AHB1_RCC, RCC_CR);
 
 	reg = readl(AHB1_RCC, RCC_PLLCFGR);
-	reg &= ~RCC_PLLCFGR_MASK;
+	reg &= RCC_PLLCFGR_MASK;
 	reg |= RCC_PLLCFGR_PLLM(4) | RCC_PLLCFGR_PLLN(336) |
 		RCC_PLLCFGR_PLLP(1) | RCC_PLLCFGR_PLLQ(14) |
 		RCC_PLLCFGR_PLLSRC;
