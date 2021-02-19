@@ -26,11 +26,12 @@
 #include <m4naos/reset.h>
 
 struct device {
-	struct reset *reset;
-	struct clk *clk;
-	char name[16];
-	u32 base;
-	void *drvdata;
+	struct reset	*reset;
+	struct clk	*clk;
+	char		name[16];
+	u32		base;
+	int		status;
+	void		*drvdata;
 };
 
 static inline void dev_set_drvdata(struct device *dev, void *data)
