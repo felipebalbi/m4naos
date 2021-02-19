@@ -53,19 +53,13 @@ void __used sys_tick_handler(void)
 void system_timer_init(void)
 {
 	u32 reload;
-	u32 period;
 	u32 csr;
 
-	/* assuming 168MHz clock */
-	period = div_round_up(NSECS_IN_SEC, 168000000);
-
 	/*
-	 * We want a tick every 1ms (aproximately), so let's calculate how many
+	 * We want a tick every 1ms, so let's calculate how many
 	 * periods of a 168MHz clock it takes to aproximate 1ms.
-	 *
-	 * We want this to truncate!!
 	 */
-	reload = NSECS_IN_MSEC / period;
+	reload = 168000000 / 1000;
 
 	writel(SYST_BASE, SYST_RVR, reload - 1);
 
