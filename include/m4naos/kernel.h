@@ -38,6 +38,7 @@
 #define prefetch(x) __builtin_prefetch(x)
 
 #define __weak		__attribute__ ((weak))
+#define __naked		__attribute__ ((naked))
 #define __alias(name)	__attribute__ ((alias(#name)))
 #define __vectors	__section(".vectors")
 #define __iomem
