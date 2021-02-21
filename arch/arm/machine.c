@@ -144,15 +144,6 @@ static void system_clock_init(void)
 	writel(AHB1_RCC, RCC_CR, reg);
 }
 
-static void system_fpu_init(void)
-{
-	u32 reg;
-
-	reg = readl(FPU_BASE, FPU_CPACR);
-	reg |= FPU_CPACR_CP10(3) | FPU_CPACR_CP11(3);
-	writel(FPU_BASE, FPU_CPACR, reg);
-}
-
 static void system_uart_init(void)
 {
 	u32 reg;
@@ -192,7 +183,6 @@ static void system_uart_init(void)
 void machine_init(void)
 {
 	system_clock_init();
-	system_fpu_init();
 	system_timer_init();
 	system_uart_init();
 
