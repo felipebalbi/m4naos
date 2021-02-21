@@ -47,22 +47,6 @@ extern void __libc_init_array(void);
 
 static u32 stack[1024];
 
-static inline __always_inline void __set_control(u32 value)
-{
-	asm volatile(
-		"msr control, %0                                             \n"
-		"isb                                                         \n"
-		: "=r" (value) );
-}
-
-static inline __always_inline void __set_psp(u32 value)
-{
-	asm volatile(
-		"msr psp, %0                                                 \n"
-		"isb                                                         \n"
-		: "=r" (value) );
-}
-
 void reset_handler(void)
 {
 	unsigned int *src;

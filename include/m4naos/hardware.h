@@ -138,22 +138,48 @@
 
 static inline void __wfi(void)
 {
-	asm("wfi");
+	asm volatile(
+		"wfi                                                         \n"
+		);
 }
 
 static inline void __dsb(void)
 {
-	asm("dsb");
+	asm volatile(
+		"dsb                                                         \n"
+		);
 }
 
 static inline void __dmb(void)
 {
-	asm("dmb");
+	asm volatile(
+		"dmb                                                         \n"
+		);
 }
 
 static inline void __isb(void)
 {
-	asm("isb");
+	asm volatile(
+		"isb                                                         \n"
+		);
+}
+
+static inline void __set_control(u32 value)
+{
+	asm volatile(
+		"msr control, %0                                             \n"
+		"isb                                                         \n"
+		: "=r" (value)
+		);
+}
+
+static inline void __set_psp(u32 value)
+{
+	asm volatile(
+		"msr psp, %0                                                 \n"
+		"isb                                                         \n"
+		: "=r" (value)
+		);
 }
 
 #endif /* __M4NAOS_HARDWARE_H */
