@@ -212,6 +212,6 @@ void irq81_handler(void) __weak __alias(default_handler);
 void machine_init(void);
 
 /* main is called from within reset_handler */
-extern int main(void);
+int main(void);
 
 #endif /* __RESET_H */

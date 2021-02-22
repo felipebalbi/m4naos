@@ -20,6 +20,7 @@
 #include <m4naos/hardware.h>
 #include <m4naos/io.h>
 #include <m4naos/kernel.h>
+#include <m4naos/sched.h>
 #include <m4naos/string.h>
 #include <m4naos/sys-tick.h>
 #include <m4naos/rcc.h>
@@ -45,10 +46,9 @@ extern u32 __bss_end__;
 
 extern void __libc_init_array(void);
 
-static u32 stack[1024];
-
 void __naked reset_handler(void)
 {
+	struct task *idle;
 	unsigned int *src;
 	unsigned int *dst;
 
@@ -69,13 +69,9 @@ void __naked reset_handler(void)
 	__libc_init_array();
 	machine_init();
 
-	stack[1023] = 0x01000000;
-	stack[1022] = (u32) &main;
-
-	__set_psp((u32) (&stack[1023 - 16]));
-	__set_control(0x03);
-	__isb();
-	main();
+	idle = task_create(main);
+	task_enqueue(idle);
+	task_run(idle);
 }
 
 void default_handler(void)
