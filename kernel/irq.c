@@ -41,5 +41,5 @@ u32 __get_primask(void)
 
 void __set_primask(u32 flags)
 {
-	asm("msr primask, %0" : "=r" (flags));
+	asm("msr primask, %0" : : "r" (flags));
 }
