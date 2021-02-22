@@ -74,6 +74,7 @@ void reset_handler(void)
 
 	__set_psp((u32) (&stack[1023 - 16]));
 	__set_control(0x03);
+	__isb();
 	main();
 }
 

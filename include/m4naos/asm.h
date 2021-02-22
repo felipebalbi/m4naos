@@ -33,6 +33,83 @@ static inline void local_irq_disable(void)
 	asm("cpsid i");
 }
 
+static inline void __sev(void)
+{
+	asm("sev");
+}
+
+static inline void __svc(u8 service)
+{
+	asm("svc %0" : : "i" (service));
+}
+
+static inline void __wfi(void)
+{
+	asm("wfi");
+}
+
+static inline void __wfe(void)
+{
+	asm("wfe");
+}
+
+static inline void __dsb(void)
+{
+	asm("dsb");
+}
+
+static inline void __dmb(void)
+{
+	asm("dmb");
+}
+
+static inline void __isb(void)
+{
+	asm("isb");
+}
+
+static inline u32 __get_msp(void)
+{
+	u32 reg;
+
+	asm("mrs %0, msp" : "=r" (reg));
+
+	return reg;
+}
+
+static inline void __set_msp(u32 value)
+{
+	asm ("msr msp, %0" : : "r" (value));
+}
+
+static inline u32 __get_psp(void)
+{
+	u32 reg;
+
+	asm("mrs %0, psp" : "=r" (reg));
+
+	return reg;
+}
+
+static inline void __set_psp(u32 value)
+{
+	asm ("msr psp, %0" : : "r" (value));
+}
+
+static inline u32 __get_psr(void)
+{
+	u32 flags;
+
+	asm("mrs %0, psr" : "=r" (flags));
+
+	return flags;
+}
+
+static inline void __set_psr(u32 flags)
+{
+	asm("msr psr, %0" : : "r" (flags));
+}
+
 static inline u32 __get_primask(void)
 {
 	u32 flags;
@@ -45,6 +122,48 @@ static inline u32 __get_primask(void)
 static inline void __set_primask(u32 flags)
 {
 	asm("msr primask, %0" : : "r" (flags));
+}
+
+static inline u32 __get_faultmask(void)
+{
+	u32 flags;
+
+	asm("mrs %0, faultmask" : "=r" (flags));
+
+	return flags;
+}
+
+static inline void __set_faultmask(u32 flags)
+{
+	asm("msr faultmask, %0" : : "r" (flags));
+}
+
+static inline u32 __get_basepri(void)
+{
+	u32 flags;
+
+	asm("mrs %0, basepri" : "=r" (flags));
+
+	return flags;
+}
+
+static inline void __set_basepri(u32 flags)
+{
+	asm("msr basepri, %0" : : "r" (flags));
+}
+
+static inline u32 __get_control(void)
+{
+	u32 flags;
+
+	asm("mrs %0, control" : "=r" (flags));
+
+	return flags;
+}
+
+static inline void __set_control(u32 flags)
+{
+	asm("msr control, %0" : : "r" (flags));
 }
 
 #endif /* __M4NAOS_ASM_H */
