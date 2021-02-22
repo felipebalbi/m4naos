@@ -38,10 +38,7 @@ static inline void __sev(void)
 	asm("sev");
 }
 
-static inline void __svc(u8 service)
-{
-	asm("svc %0" : : "i" (service));
-}
+#define __svc() asm("svc #0")
 
 static inline void __wfi(void)
 {
