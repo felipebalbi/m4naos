@@ -17,9 +17,34 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __M4NAOS_IRQ_H
-#define __M4NAOS_IRQ_H
+#ifndef __M4NAOS_ASM_H
+#define __M4NAOS_ASM_H
 
 #include <m4naos/kernel.h>
+#include <m4naos/hardware.h>
 
-#endif /* __M4NAOS_IRQ_H */
+static inline void local_irq_enable(void)
+{
+	asm("cpsie i");
+}
+
+static inline void local_irq_disable(void)
+{
+	asm("cpsid i");
+}
+
+static inline u32 __get_primask(void)
+{
+	u32 flags;
+
+	asm("mrs %0, primask" : "=r" (flags));
+
+	return flags;
+}
+
+static inline void __set_primask(u32 flags)
+{
+	asm("msr primask, %0" : : "r" (flags));
+}
+
+#endif /* __M4NAOS_ASM_H */

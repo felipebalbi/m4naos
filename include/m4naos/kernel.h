@@ -22,6 +22,7 @@
 
 #include <sys/cdefs.h>
 
+#include <m4naos/asm.h>
 #include <m4naos/types.h>
 #include <m4naos/version.h>
 
