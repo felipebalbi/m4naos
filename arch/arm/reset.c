@@ -47,7 +47,7 @@ extern void __libc_init_array(void);
 
 static u32 stack[1024];
 
-void reset_handler(void)
+void __naked reset_handler(void)
 {
 	unsigned int *src;
 	unsigned int *dst;
