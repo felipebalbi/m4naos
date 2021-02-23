@@ -138,8 +138,5 @@ void pendsv_handler(void)
 	save_context();
 	switch_context();
 	restore_context();
-
-	/* Erratum: 838869 */
-	asm volatile ("dsb 0xf":::"memory");
 }
 
