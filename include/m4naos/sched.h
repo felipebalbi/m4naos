@@ -37,14 +37,14 @@
 #define TASK_RETURN_THREAD_PSP	0xfffffffd 
 
 struct sw_stack_frame {
-	u32	r4;
-	u32	r5;
-	u32	r6;
-	u32	r7;
 	u32	r8;
 	u32	r9;
 	u32	r10;
 	u32	r11;
+	u32	r4;
+	u32	r5;
+	u32	r6;
+	u32	r7;
 };
 
 struct hw_stack_frame {
