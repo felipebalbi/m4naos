@@ -89,8 +89,8 @@ struct task *task_create(int (*handler)(void))
 	new->stack_frame.hw.r2 = 0;
 	new->stack_frame.hw.r3 = 0;
 	new->stack_frame.hw.r12 = 0;
-	new->stack_frame.hw.pc = (u32) handler;
 	new->stack_frame.hw.lr = (u32) task_destroy;
+	new->stack_frame.hw.pc = (u32) handler;
 	new->stack_frame.hw.psr = 0x01000000;
 
 	new->sp = (u32) &new->stack_frame.sw.r11;
