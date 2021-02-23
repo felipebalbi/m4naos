@@ -28,7 +28,6 @@
 #include <m4naos/sched.h>
 
 static LIST_HEAD(task_list);
-static u32 msp;
 struct task *current;
 
 static __always_inline void save_context(void)
@@ -61,7 +60,6 @@ static __always_inline void switch_context(void)
 		current = list_first_entry(&task_list, struct task, list);
 	}
 
-	*((u32 *) msp) = TASK_RETURN_THREAD_PSP;
 	__set_psp(current->sp);
 	__isb();
 	__dsb();
@@ -138,7 +136,6 @@ void svc_handler(void)
 void pendsv_handler(void)
 {
 	save_context();
-	msp = __get_msp();
 	switch_context();
 	restore_context();
 
