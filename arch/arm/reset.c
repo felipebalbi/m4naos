@@ -46,7 +46,7 @@ extern u32 __bss_end__;
 
 extern void __libc_init_array(void);
 
-void __naked reset_handler(void)
+void reset_handler(void)
 {
 	struct task *idle;
 	unsigned int *src;
