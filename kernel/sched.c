@@ -55,7 +55,7 @@ static __always_inline void switch_context(void)
 {
 	if (current) {
 		current->sp = __get_psp();
-		current = list_first_entry(current->list.next, struct task,
+		current = list_first_entry(current->list.prev, struct task,
 				list);
 	} else {
 		current = list_first_entry(&task_list, struct task, list);
@@ -63,6 +63,8 @@ static __always_inline void switch_context(void)
 
 	*((u32 *) msp) = TASK_RETURN_THREAD_PSP;
 	__set_psp(current->sp);
+	__isb();
+	__dsb();
 }
 
 static void task_destroy(void)
@@ -72,7 +74,7 @@ static void task_destroy(void)
 	current = NULL;
 }
 
-struct task *task_create(int (*handler)(void))
+struct task *task_create(int (*handler)(void *context), void *context)
 {
 	struct task *new;
 
@@ -81,8 +83,8 @@ struct task *task_create(int (*handler)(void))
 		goto err0;
 
 	new->handler = handler;
-	new->stack_frame.sw.r11 = TASK_RETURN_THREAD_PSP;
-	new->stack_frame.hw.r0 = 0; /* could pass context here */
+	new->context = context;
+	new->stack_frame.hw.r0 = (u32) context;
 	new->stack_frame.hw.r1 = 0;
 	new->stack_frame.hw.r2 = 0;
 	new->stack_frame.hw.r3 = 0;
@@ -114,7 +116,7 @@ void task_run(struct task *t)
 	/* force current to t */
 	__svc();
 	current = t;
-	t->handler();
+	t->handler(t->context);
 }
 
 void __schedule(void)

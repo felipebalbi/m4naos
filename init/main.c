@@ -26,21 +26,36 @@
 #include <m4naos/uart.h>
 #include <m4naos/sched.h>
 
-static int task_handler(void)
+static int task0_handler(void *context __unused)
 {
 	while (true)
-		uart_puts("m4naOS " M4NAOS_VERSION_STR "\n");
+		uart_puts("TASK0\n");
+
+	return 0;
+}
+
+static int task1_handler(void *context __unused)
+{
+	while (true)
+		uart_puts("TASK1\n");
 
 	return 0;
 }
 
 int main(void)
 {
-	struct task *idle;
+	struct task *t0;
+	struct task *t1;
 
-	idle = task_create(task_handler);
-	task_enqueue(idle);
-	task_run(idle);
+	int message = 0xdeadbeef;
+
+	t0 = task_create(task0_handler, &message);
+	task_enqueue(t0);
+
+	t1 = task_create(task1_handler, &message);
+	task_enqueue(t1);
+
+	task_run(t0);
 
 	return 0;
 }
