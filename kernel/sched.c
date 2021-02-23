@@ -106,7 +106,11 @@ void task_enqueue(struct task *t)
 
 void task_run(struct task *t)
 {
-	__set_psp(t->sp);
+	/*
+	 * when starting a task directly, we should set PSP to the
+	 * very top of the task's stack.
+	 */
+	__set_psp(t->sp + 64);
 	__isb();
 	__set_control(0x03);
 	__isb();
