@@ -21,6 +21,7 @@
 #include <m4naos/hardware.h>
 #include <m4naos/io.h>
 #include <m4naos/kernel.h>
+#include <m4naos/sched.h>
 #include <m4naos/sys-tick.h>
 
 #define SYST_CSR		0x00
@@ -45,9 +46,10 @@
 
 u32 jiffies = 0;
 
-void __used sys_tick_handler(void)
+void sys_tick_handler(void)
 {
 	jiffies++;
+	__schedule();
 }
 
 void system_timer_init(void)
@@ -76,6 +78,8 @@ void system_timer_init(void)
 	writel(SYST_BASE, SYST_CSR, csr);
 	csr |= SYST_CSR_ENABLE;
 	writel(SYST_BASE, SYST_CSR, csr);
+
+	writel(SCB_BASE, SCB_SHPR3, 0xff000000);
 }
 
 static int timer_init(void)

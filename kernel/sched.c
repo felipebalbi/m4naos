@@ -46,7 +46,7 @@ static __always_inline void restore_context(void)
 	u32 scratch;
 
 	asm("mrs %0, psp\n"
-	    "ldmfd %0!, {r4-r11}\n"
+	    "ldmia %0!, {r4-r11}\n"
 	    "msr psp, %0\n"
 	    : "=r" (scratch));
 }
@@ -61,7 +61,7 @@ static __always_inline void switch_context(void)
 		current = list_first_entry(&task_list, struct task, list);
 	}
 
-	*((u32 *) msp) = TASK_RETURN_THREAD_PSP; 
+	*((u32 *) msp) = TASK_RETURN_THREAD_PSP;
 	__set_psp(current->sp);
 }
 
@@ -83,6 +83,7 @@ struct task *task_create(int (*handler)(void))
 	memset(new, 0x00, sizeof(*new));
 
 	new->handler = handler;
+	new->stack_frame.sw.r11 = TASK_RETURN_THREAD_PSP;
 	new->stack_frame.hw.r0 = 0; /* could pass context here */
 	new->stack_frame.hw.r1 = 0;
 	new->stack_frame.hw.r2 = 0;
@@ -90,9 +91,9 @@ struct task *task_create(int (*handler)(void))
 	new->stack_frame.hw.r12 = 0;
 	new->stack_frame.hw.pc = (u32) handler;
 	new->stack_frame.hw.lr = (u32) task_destroy;
-	new->stack_frame.hw.psr = 0x21000000;
+	new->stack_frame.hw.psr = 0x01000000;
 
-	new->sp = (u32) (new->stack_frame.stack + TASK_STACK_SIZE + 4);
+	new->sp = (u32) &new->stack_frame.sw.r11;
 
 	return new;
 
@@ -103,16 +104,17 @@ err0:
 void task_enqueue(struct task *t)
 {
 	list_add_tail(&t->list, &task_list);
-	
 }
 
 void task_run(struct task *t)
 {
 	__set_psp(t->sp);
+	__isb();
 	__set_control(0x03);
 	__isb();
 
 	/* force current to t */
+	__svc();
 	current = t;
 	t->handler();
 }
@@ -129,11 +131,18 @@ void schedule(void)
 	local_irq_enable();
 }
 
+void svc_handler(void)
+{
+}
+
 void pendsv_handler(void)
 {
 	save_context();
 	msp = __get_msp();
 	switch_context();
 	restore_context();
+
+	/* Erratum: 838869 */
+	asm volatile ("dsb 0xf":::"memory");
 }
 

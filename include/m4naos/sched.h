@@ -27,9 +27,10 @@
 #define TASK_STATE_RUNNABLE	1
 #define TASK_STATE_RUNNING	2
 
-#define TASK_STACK_SIZE		(4096 - \
-	(sizeof(struct sw_stack_frame)- \
-	 sizeof(struct hw_stack_frame)))
+#define TASK_STACK_SIZE		((4096 -			\
+				(sizeof(struct sw_stack_frame)+ \
+				sizeof(struct hw_stack_frame)))	\
+				>> 2)
 
 #define TASK_RETURN_HANDLER	0xfffffff1
 #define TASK_RETURN_THREAD_MSP	0xfffffff9
@@ -58,7 +59,7 @@ struct hw_stack_frame {
 };
 
 struct task_stack_frame {
-	u8			stack[TASK_STACK_SIZE];
+	u32			stack[TASK_STACK_SIZE];
 	struct sw_stack_frame	sw;
 	struct hw_stack_frame	hw;
 };
