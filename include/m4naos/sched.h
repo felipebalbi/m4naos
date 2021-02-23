@@ -65,12 +65,12 @@ struct task_stack_frame {
 };
 
 struct task {
+	u32 sp;
 	struct list_head list;
 	struct task_stack_frame stack_frame;
 	int (*handler)(void *context);
 	void *context;
 	u32 state;
-	u32 sp;
 };
 
 struct task *task_create(int (*handler)(void *context), void *context);
