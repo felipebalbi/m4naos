@@ -116,8 +116,9 @@
 #define SCB_AIRCR		0x0c
 #define SCB_SCR			0x10
 #define SCB_CCR			0x14
-#define SCB_SHPR2		0x18
-#define SCB_SHPR3		0x1c
+#define SCB_SHPR1		0x18
+#define SCB_SHPR2		0x1c
+#define SCB_SHPR3		0x20
 
 #define SCB_ICSR_RETTOBASE	BIT(11)
 #define SCB_ICSR_ISRPENDING	BIT(22)
