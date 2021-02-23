@@ -80,8 +80,6 @@ struct task *task_create(int (*handler)(void))
 	if (!new)
 		goto err0;
 
-	memset(new, 0x00, sizeof(*new));
-
 	new->handler = handler;
 	new->stack_frame.sw.r11 = TASK_RETURN_THREAD_PSP;
 	new->stack_frame.hw.r0 = 0; /* could pass context here */
