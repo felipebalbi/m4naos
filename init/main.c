@@ -24,11 +24,23 @@
 #include <m4naos/string.h>
 #include <m4naos/io.h>
 #include <m4naos/uart.h>
+#include <m4naos/sched.h>
 
-int main(void)
+static int task_handler(void)
 {
 	while (true)
 		uart_puts("m4naOS " M4NAOS_VERSION_STR "\n");
+
+	return 0;
+}
+
+int main(void)
+{
+	struct task *idle;
+
+	idle = task_create(task_handler);
+	task_enqueue(idle);
+	task_run(idle);
 
 	return 0;
 }

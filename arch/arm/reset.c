@@ -48,7 +48,6 @@ extern void __libc_init_array(void);
 
 void reset_handler(void)
 {
-	struct task *idle;
 	unsigned int *src;
 	unsigned int *dst;
 
@@ -69,9 +68,7 @@ void reset_handler(void)
 	__libc_init_array();
 	machine_init();
 
-	idle = task_create(main);
-	task_enqueue(idle);
-	task_run(idle);
+	main();
 }
 
 void default_handler(void)
