@@ -109,8 +109,3 @@ void schedule(void)
 	__schedule();
 	local_irq_enable();
 }
-
-void svc_handler(void)
-{
-}
-
