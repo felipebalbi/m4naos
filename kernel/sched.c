@@ -94,7 +94,6 @@ void task_run(struct task *t)
 	__isb();
 
 	/* force current to t */
-	__svc();
 	current = t;
 	t->handler(t->context);
 }
