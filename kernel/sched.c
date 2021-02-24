@@ -32,11 +32,15 @@ struct task *current;
 
 void choose_task(void)
 {
-	if (current)
-		current = list_first_entry(current->list.prev, struct task,
+	if (current) {
+		current = list_first_entry(&current->list, struct task,
 				list);
-	else
+		if (&current->list == &task_list)
+			current = list_first_entry(&current->list, struct task,
+					list);
+	} else {
 		current = list_first_entry(&task_list, struct task, list);
+	}
 }
 
 static void task_destroy(void)
@@ -65,7 +69,7 @@ struct task *task_create(int (*handler)(void *context), void *context)
 	new->stack_frame.hw.pc = (u32) handler;
 	new->stack_frame.hw.psr = 0x01000000;
 
-	new->sp = (u32) &new->stack_frame.sw.r11;
+	new->sp = ((u32) &new->stack_frame) + sizeof(new->stack_frame) - 64;
 
 	return new;
 
