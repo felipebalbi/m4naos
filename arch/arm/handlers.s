@@ -85,9 +85,11 @@ ENDPROC(pendsv_handler)
 PROC(default_handler)
 0:
 	wfi
-	b	0
+	b	0b
 ENDPROC(default_handler)
 
+
+	/* Vector Table */
 	.section .vectors
 	.word	__end_stack__
 	.word	reset_handler
