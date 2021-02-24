@@ -30,39 +30,13 @@
 static LIST_HEAD(task_list);
 struct task *current;
 
-static __always_inline void save_context(void)
+void choose_task(void)
 {
-	u32 scratch;
-
-	asm("mrs %0, psp\n"
-	    "stmdb %0!, {r4-r11}\n"
-	    "msr psp, %0\n"
-	    : "=r" (scratch));
-}
-
-static __always_inline void restore_context(void)
-{
-	u32 scratch;
-
-	asm("mrs %0, psp\n"
-	    "ldmia %0!, {r4-r11}\n"
-	    "msr psp, %0\n"
-	    : "=r" (scratch));
-}
-
-static __always_inline void switch_context(void)
-{
-	if (current) {
-		current->sp = __get_psp();
+	if (current)
 		current = list_first_entry(current->list.prev, struct task,
 				list);
-	} else {
+	else
 		current = list_first_entry(&task_list, struct task, list);
-	}
-
-	__set_psp(current->sp);
-	__isb();
-	__dsb();
 }
 
 static void task_destroy(void)
@@ -135,12 +109,5 @@ void schedule(void)
 
 void svc_handler(void)
 {
-}
-
-void pendsv_handler(void)
-{
-	save_context();
-	switch_context();
-	restore_context();
 }
 
