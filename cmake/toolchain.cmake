@@ -4,6 +4,7 @@ set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_C_COMPILER_ID GNU)
 set(CMAKE_C_COMPILER_FORCED TRUE)
+set(CMAKE_ASM_FLAGS "${CFLAGS} -x assembler-with-cpp -D__ASSEMBLY__")
 
 set(CPU_OPTIONS -mthumb -mcpu=cortex-m4)
 
