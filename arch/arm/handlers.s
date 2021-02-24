@@ -1,14 +1,11 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 
-	.syntax unified
+#include <m4naos/asm.h>
+
+	.syntax	unified
 	.thumb
 
-	.section .text
-	.extern choose_task
-	.global pendsv_handler
-	.type pendsv_handler, %function
-
-pendsv_handler:
+PROC(pendsv_handler)
 	/* Disable interrupts: */
 	cpsid	i
 
@@ -42,5 +39,4 @@ pendsv_handler:
 	cpsie	i
 
 	bx	r0
-
-.size pendsv_handler, . - pendsv_handler
+ENDPROC(pendsv_handler)

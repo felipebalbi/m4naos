@@ -20,6 +20,21 @@
 #ifndef __M4NAOS_ASM_H
 #define __M4NAOS_ASM_H
 
+#ifdef __ASSEMBLY__
+
+#define NL	;
+
+#define PROC(name)			\
+	.globl name		NL	\
+	.align 4		NL	\
+	name:
+
+#define ENDPROC(name)			\
+	.type name, %function	NL	\
+	.size name, .-name
+
+#else /* __ASSEMBLY__ */
+
 #include <m4naos/kernel.h>
 #include <m4naos/hardware.h>
 
@@ -165,5 +180,7 @@ static inline __always_inline void __set_control(u32 flags)
 {
 	asm("msr control, %0" : : "r" (flags));
 }
+
+#endif /* __ASSEMBLY__ */
 
 #endif /* __M4NAOS_ASM_H */
