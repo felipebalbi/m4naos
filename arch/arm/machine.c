@@ -183,7 +183,6 @@ static void system_uart_init(void)
 void machine_init(void)
 {
 	system_clock_init();
-	system_timer_init();
 	system_uart_init();
 
 	kernel_init();

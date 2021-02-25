@@ -52,7 +52,7 @@ void sys_tick_handler(void)
 	__schedule();
 }
 
-void system_timer_init(void)
+static int timer_init(void)
 {
 	u32 reload;
 	u32 csr;
@@ -80,11 +80,6 @@ void system_timer_init(void)
 	writel(SYST_BASE, SYST_CSR, csr);
 
 	writel(SCB_BASE, SCB_SHPR3, 0x00ff0000);
-}
-
-static int timer_init(void)
-{
-	printf("subsys: %s\n", __func__);
 
 	return 0;
 }

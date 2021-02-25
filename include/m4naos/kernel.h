@@ -105,7 +105,6 @@ typedef int (*late_initcall_t)(void);
 
 #define NSECS_IN_SEC		1000000000
 
-void system_timer_init(void);
 void kernel_init(void);
 
 /* types */
