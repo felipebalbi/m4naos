@@ -19,6 +19,8 @@
 
 #include <stdio.h>
 #include <m4naos/kernel.h>
+#include <m4naos/device.h>
+#include <m4naos/driver.h>
 #include <m4naos/irq.h>
 #include <m4naos/io.h>
 #include <m4naos/uart.h>
@@ -52,12 +54,12 @@ void uart_puts(const char *str)
 	__uart_puts(str);
 }
 
-static int uart_init(void)
+static int uart_probe(struct device *dev)
 {
 	u32 reg;
 
 	clk_enable(RCC_AHB1ENR, BIT(0));
-	clk_enable(RCC_APB2ENR, BIT(4));
+	clk_enable(dev->clk->offset, BIT(dev->clk->bit));
 
 	reg = readl(AHB1_GPIOA, 0x00);
 	reg |= (2 << 18);
@@ -88,5 +90,15 @@ static int uart_init(void)
 	writel(APB2_USART1, USART_CR1, reg);
 
 	return 0;
+}
+
+static struct driver uart_driver = {
+	.name		= "usart",
+	.probe		= uart_probe,
+};
+
+static int uart_init(void)
+{
+	return register_driver(&uart_driver);
 }
 postcore_init(uart_init);
