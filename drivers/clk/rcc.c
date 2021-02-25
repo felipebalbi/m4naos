@@ -175,8 +175,6 @@ static int rcc_probe(struct device *dev)
 	struct rcc *rcc;
 	int ret;
 
-	system_clock_init();
-
 	rcc = malloc(sizeof(*rcc));
 	if (!rcc) {
 		ret = -ENOMEM;
@@ -193,6 +191,7 @@ static int rcc_probe(struct device *dev)
 	}
 
 	the_rcc = rcc;
+	system_clock_init();
 
 	return 0;
 
