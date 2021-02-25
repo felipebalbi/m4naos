@@ -38,7 +38,7 @@ zero_bss:
 	bne	zero_bss
 
 	bl	__libc_init_array
-	bl	machine_init
+	bl	kernel_init
 	ldr	r0, =main
 	bx	r0
 
