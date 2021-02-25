@@ -194,9 +194,6 @@ static int rcc_probe(struct device *dev)
 
 	the_rcc = rcc;
 
-	printf("core: %s: rcc %p base %p\n",
-			__func__, rcc, rcc->base);
-
 	return 0;
 
 err1:
