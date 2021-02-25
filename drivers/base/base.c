@@ -335,14 +335,15 @@ int driver_probe(struct device *dev, struct driver *drv)
 
 int drivers_start(void)
 {
+	struct driver *drv;
 	int ret;
-	int i;
 
-	for (i = 0; i < ARRAY_SIZE(devices); i++) {
-		struct device *dev = devices[i];
-		struct driver *drv;
+	list_for_each_entry(drv, &drivers_list, list) {
+		int i;
 
-		list_for_each_entry(drv, &drivers_list, list) {
+		for (i = 0; i < ARRAY_SIZE(devices); i++) {
+			struct device *dev = devices[i];
+
 			if (!dev->status)
 				continue;
 
@@ -350,11 +351,8 @@ int drivers_start(void)
 				continue;
 
 			ret = driver_probe(dev, drv);
-			if (ret < 0) {
-				printf("%s: initialization error --> %d\n",
-						dev->name, ret);
+			if (ret < 0)
 				continue;
-			}
 		}
 	}
 
