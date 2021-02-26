@@ -7,7 +7,7 @@ __stack_min_size__	= 0x400;
 MEMORY {
        flash(rx) : ORIGIN = 0x08000000, LENGTH = 1024K
        sram(rwx) : ORIGIN = 0x20000000, LENGTH = 128K
-       ccm(rwx)  : ORIGIN = 0x10000000, LENGTH = 64K
+       ccm(rw)   : ORIGIN = 0x10000000, LENGTH = 64K
 }
 
 SECTIONS {
