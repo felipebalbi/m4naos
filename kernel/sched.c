@@ -69,7 +69,9 @@ struct task *task_create(int (*handler)(void *context), void *context)
 	new->stack_frame.hw.pc = (u32) handler;
 	new->stack_frame.hw.psr = 0x01000000;
 
-	new->sp = ((u32) &new->stack_frame) + sizeof(new->stack_frame) - 64;
+	new->exc_return = 0xfffffffd;
+	new->stack_pointer = ((u32) &new->stack_frame) +
+		sizeof(new->stack_frame) - 64;
 
 	return new;
 
@@ -88,7 +90,7 @@ void task_run(struct task *t)
 	 * when starting a task directly, we should set PSP to the
 	 * very top of the task's stack.
 	 */
-	__set_psp(t->sp + 64);
+	__set_psp(t->stack_pointer + 64);
 	__isb();
 	__set_control(0x03);
 	__isb();

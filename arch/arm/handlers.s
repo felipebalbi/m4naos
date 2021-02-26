@@ -74,7 +74,7 @@ PROC(pendsv_handler)
 	msr	psp, r0
 
 	/* EXC_RETURN - Thread mode with PSP */
-	ldr	r0,  =0xfffffffd
+	ldr	r0,  [r1, #4]
 
 	/* Enable interrupts: */
 	cpsie	i
