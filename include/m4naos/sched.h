@@ -27,7 +27,7 @@
 #define TASK_STATE_RUNNABLE	1
 #define TASK_STATE_RUNNING	2
 
-#define TASK_STACK_SIZE		((4096 -			\
+#define TASK_STACK_SIZE		((2048 -			\
 				(sizeof(struct sw_stack_frame)+ \
 				sizeof(struct hw_stack_frame)))	\
 				>> 2)
