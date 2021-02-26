@@ -27,6 +27,9 @@
 #include <m4naos/kernel.h>
 #include <m4naos/sched.h>
 
+#define CONTROL_NPRIV		BIT(0)
+#define CONTROL_SPSEL		BIT(1)
+
 static LIST_HEAD(task_list);
 struct task *current;
 
@@ -92,7 +95,7 @@ void task_run(struct task *t)
 	 */
 	__set_psp(t->stack_pointer + 64);
 	__isb();
-	__set_control(0x03);
+	__set_control(CONTROL_SPSEL | CONTROL_NPRIV);
 	__isb();
 
 	/* force current to t */
