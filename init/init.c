@@ -17,6 +17,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <m4naos/device.h>
 #include <m4naos/driver.h>
 #include <m4naos/hardware.h>
 #include <m4naos/kernel.h>
@@ -79,7 +80,13 @@ static void kernel_init_drivers(void)
 	drivers_start();
 }
 
+static void kernel_init_devices(void)
+{
+	machine_init_devices();
+}
+
 void kernel_init(void)
 {
+	kernel_init_devices();
 	kernel_init_drivers();
 }

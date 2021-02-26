@@ -44,4 +44,8 @@ static inline void *dev_get_drvdata(struct device *dev)
 	return dev->drvdata;
 }
 
+int register_devices(struct device **devices, int n);
+
+void machine_init_devices(void);
+
 #endif /* __M4NAOS_DEVICE_H */
