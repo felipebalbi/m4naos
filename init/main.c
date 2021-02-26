@@ -45,13 +45,11 @@ int main(void)
 	struct task *t1;
 	int i;
 
-	int message = 0xdeadbeef;
-
-	t0 = task_create(task_handler, &message, 0);
+	t0 = task_create(task_handler, NULL, 0);
 	task_enqueue(t0);
 
 	for (i = 0; i < 16; i++) {
-		t1 = task_create(task_handler, &i, i & 1);
+		t1 = task_create(task_handler, NULL, i & 1);
 		task_enqueue(t1);
 	}
 
