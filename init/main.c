@@ -17,6 +17,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <m4naos/delay.h>
 #include <m4naos/hardware.h>
 #include <m4naos/irq.h>
@@ -26,18 +27,14 @@
 #include <m4naos/uart.h>
 #include <m4naos/sched.h>
 
-static int task0_handler(void *context __unused)
+static int task_handler(void *context __unused)
 {
-	while (true)
-		uart_puts("TASK0\n");
+	char str[8];
 
-	return 0;
-}
+	snprintf(str, 8, "TASK%d\n", current->id);
 
-static int task1_handler(void *context __unused)
-{
 	while (true)
-		uart_puts("TASK1\n");
+		uart_puts(str);
 
 	return 0;
 }
@@ -46,14 +43,17 @@ int main(void)
 {
 	struct task *t0;
 	struct task *t1;
+	int i;
 
 	int message = 0xdeadbeef;
 
-	t0 = task_create(task0_handler, &message, 0);
+	t0 = task_create(task_handler, &message, 0);
 	task_enqueue(t0);
 
-	t1 = task_create(task1_handler, &message, 0);
-	task_enqueue(t1);
+	for (i = 0; i < 16; i++) {
+		t1 = task_create(task_handler, &i, i & 1);
+		task_enqueue(t1);
+	}
 
 	task_run(t0);
 
