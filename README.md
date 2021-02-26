@@ -7,9 +7,14 @@ microkernel to run on a STM32F405RG device.
 
 # Motivation
 
-I've always wanted a desktop computer running 100% Free Software. Now that
-[Coreboot][1]/[Libreboot][2] have good support for some recent HW running
-without any firmware blobs, I feel like the Keyboard is the next natural step.
+The original motivation of the project was to develop a open source
+firmware for USB and/or PS/2 keyboards, but as it turns out, the
+project took a life of its own and I changed scope towards a small
+RTOS for Cortex-M4F STM32F405RG.
+
+Even though I'm developing and testing only on an Olimex H405 board
+sporting a STM32F405RG, it shouldn't be too hard to port it to other
+Cortex-M devices, don't quote me on that, though.
 
 # Coding Style
 
