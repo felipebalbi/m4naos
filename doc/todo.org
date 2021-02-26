@@ -1,46 +1,52 @@
-* TODO M4naos List of To-Do items [0/7]
+* TODO M4naos List of To-Do items [4/9]
+** DONE Reset handler
+   CLOSED: [2021-02-26 Fri 20:01]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2021-02-26 Fri 20:01]
+   :END:
 
-** TODO Enable USB clocks
+** DONE Drivers Base
+   CLOSED: [2021-02-26 Fri 20:01]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2021-02-26 Fri 20:01]
+   :END:
 
-** TODO Deassert Macrocell-specific Reset
+** DONE SysTick handler
+   CLOSED: [2021-02-26 Fri 20:01]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2021-02-26 Fri 20:01]
+   :END:
 
-** TODO Switch on Analog part of USB
+** TODO Context Switching [1/2]
 
-   This is achieved via PDWN bit on CNTR register. Also, keep an eye for
-   tSTARTUP. Look it up on datasheet
+*** DONE Task Linked List
+    CLOSED: [2021-02-26 Fri 20:01]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2021-02-26 Fri 20:01] \\
+      done
+    :END:
 
-** TODO Deassert USB Reset
+*** TODO Task Priority Queue
 
-   After waiting for tSTARTUP, clear FRES on CNTR resgister
+** DONE =newlib-nano= Integration
+   CLOSED: [2021-02-26 Fri 20:01]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2021-02-26 Fri 20:01]
+   :END:
 
-** TODO Clear ISTR Register
+** TODO IRQ Subsystem [0/2]
 
-   This makes sure any spurious pending IRQs are cleared
+*** TODO Implement generic IRQ handler
 
-** TODO Initialize all necessary registers
+*** TODO Implement IRQ handling thread
 
-   Anything which is not related to endpoints, should be initialized according
-   to our needs (remember, we're doing a keyboard).
+** TODO Input Subsystem
+** TODO USB Subsystem
+** TODO Scheduler [1/2]
+*** DONE Round Robin Scheduler
+    CLOSED: [2021-02-26 Fri 20:19]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2021-02-26 Fri 20:19]
+    :END:
+*** TODO Earliest Deadline Scheduler
 
-** TODO Receive and process USB Reset [0/3]
-
-*** TODO Enable USB Function
-
-    This is accomplished by setting EF bit of USB_DADDR register
-
-*** TODO Process SetAddress
-
-    We should extract host-provided address from control request and write it to
-    bits [6:0] of USB_DADDR
-
-*** TODO Configure any other necessary endpoints
-    For us, we're talking about another Interrupt IN endpoint which will be used
-    to transfer HID Reports.
-
-*** TODO Implement USB HID protocol
-    This will be quite a bit of work, involving a ton of type definitions to
-    create a simplistic USB Peripheral stack. I still want to split USB
-    application (what Linux refers to as Gadget Driver) from the UDC (for USB
-    Device Controller) so that we could, potentially, plug different
-    applications to the same UDC. One extra application could be, for example,
-    DFU for FW upgrade.
