@@ -68,6 +68,7 @@ struct task {
 	u32 stack_pointer;
 	u32 exc_return;
 	u32 control;
+	u32 id;
 	struct list_head list;
 	struct task_stack_frame stack_frame;
 	int (*handler)(void *context);

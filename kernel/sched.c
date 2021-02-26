@@ -32,6 +32,7 @@
 
 static LIST_HEAD(task_list);
 struct task *current;
+static u32 task_id;
 
 void choose_task(void)
 {
@@ -64,6 +65,7 @@ struct task *task_create(int (*handler)(void *context), void *context,
 
 	new->handler = handler;
 	new->context = context;
+	new->id = task_id++;
 	new->stack_frame.hw.r0 = (u32) context;
 	new->stack_frame.hw.r1 = 0;
 	new->stack_frame.hw.r2 = 0;
