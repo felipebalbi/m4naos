@@ -76,6 +76,11 @@ PROC(pendsv_handler)
 	/* EXC_RETURN - Thread mode with PSP */
 	ldr	r0,  [r1, #4]
 
+	/* CONTROL - choose Thread's privilege level */
+	ldr	r2, [r1, #8]
+	msr	control, r2
+	isb
+
 	/* Enable interrupts: */
 	cpsie	i
 
