@@ -83,4 +83,6 @@ void task_run(struct task *t);
 void __schedule(void);
 void schedule(void);
 
+extern struct task *current;
+
 #endif /* __M4NAOS_SCHED_H */
