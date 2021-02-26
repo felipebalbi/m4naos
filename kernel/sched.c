@@ -53,7 +53,8 @@ static void task_destroy(void)
 	current = NULL;
 }
 
-struct task *task_create(int (*handler)(void *context), void *context)
+struct task *task_create(int (*handler)(void *context), void *context,
+	int privileged)
 {
 	struct task *new;
 
@@ -72,7 +73,11 @@ struct task *task_create(int (*handler)(void *context), void *context)
 	new->stack_frame.hw.pc = (u32) handler;
 	new->stack_frame.hw.psr = 0x01000000;
 
-	new->control = CONTROL_SPSEL | CONTROL_NPRIV;
+	new->control = CONTROL_SPSEL;
+
+	if (!privileged)
+		new->control |= CONTROL_NPRIV;
+
 	new->exc_return = TASK_RETURN_THREAD_PSP;
 	new->stack_pointer = ((u32) &new->stack_frame) +
 		sizeof(new->stack_frame) - 64;

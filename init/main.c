@@ -49,10 +49,10 @@ int main(void)
 
 	int message = 0xdeadbeef;
 
-	t0 = task_create(task0_handler, &message);
+	t0 = task_create(task0_handler, &message, 0);
 	task_enqueue(t0);
 
-	t1 = task_create(task1_handler, &message);
+	t1 = task_create(task1_handler, &message, 0);
 	task_enqueue(t1);
 
 	task_run(t0);

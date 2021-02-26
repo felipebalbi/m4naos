@@ -75,7 +75,8 @@ struct task {
 	u32 state;
 };
 
-struct task *task_create(int (*handler)(void *context), void *context);
+struct task *task_create(int (*handler)(void *context), void *context,
+		int privileged);
 void task_enqueue(struct task *t);
 void task_run(struct task *t);
 void __schedule(void);
