@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.16)
 include("cmake/toolchain.cmake")
 include("cmake/add_sources.cmake")
 
-project(m4naos VERSION 0.1.1 LANGUAGES C ASM)
+project(m4naos VERSION 0.1.2 LANGUAGES C ASM)
 
 include("cmake/git.cmake")
 
