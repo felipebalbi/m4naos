@@ -42,6 +42,10 @@
 
 ** TODO Input Subsystem
 ** TODO USB Subsystem
+** TODO Pin muxing [0/3]
+*** TODO Define a data format for pinmuxing
+*** TODO Describe the required pinmuxing for my keyboard project
+*** TODO Initialize pins per pinmuxing description
 ** TODO Scheduler [1/2]
 *** DONE Round Robin Scheduler
     CLOSED: [2021-02-26 Fri 20:19]
