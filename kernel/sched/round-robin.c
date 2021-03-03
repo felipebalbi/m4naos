@@ -36,14 +36,19 @@ static u32 task_id;
 
 void choose_task(void)
 {
-	if (current) {
+	/* put current back into the runq */
+	current->state = TASK_STATE_RUNNABLE;
+
+	while (1) {
 		current = list_first_entry(&current->list, struct task,
 				list);
 		if (&current->list == &task_list)
 			current = list_first_entry(&current->list, struct task,
 					list);
-	} else {
-		current = list_first_entry(&task_list, struct task, list);
+		if (current->state == TASK_STATE_RUNNABLE) {
+			current->state = TASK_STATE_RUNNING;
+			break;
+		}
 	}
 }
 
@@ -66,6 +71,7 @@ struct task *task_create(int (*handler)(void *context), void *context,
 	new->handler = handler;
 	new->context = context;
 	new->id = task_id++;
+	new->state = TASK_STATE_IDLE;
 	new->stack_frame.hw.r0 = (u32) context;
 	new->stack_frame.hw.r1 = 0;
 	new->stack_frame.hw.r2 = 0;
@@ -92,6 +98,7 @@ err0:
 
 void task_enqueue(struct task *t)
 {
+	t->state = TASK_STATE_RUNNABLE;
 	list_add_tail(&t->list, &task_list);
 }
 
@@ -108,5 +115,6 @@ void task_run(struct task *t)
 
 	/* force current to t */
 	current = t;
+	t->state = TASK_STATE_RUNNING;
 	t->handler(t->context);
 }
