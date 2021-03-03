@@ -28,37 +28,37 @@ static inline void __iomem *ioremap(phys_addr_t offset)
 	return (void __iomem *)(unsigned long) offset;
 }
 
-static inline void writeb_relaxed(u32 base,
+static inline void writeb_relaxed(void __iomem *base,
 		u32 offset, u8 value)
 {
 	*((volatile u8 *) (base + offset)) = value;
 }
 
-static inline u8 readb_relaxed(u32 base,
+static inline u8 readb_relaxed(void __iomem *base,
 		u32 offset)
 {
 	return *((volatile u8 *) (base + offset));
 }
 
-static inline void writew_relaxed(u32 base,
+static inline void writew_relaxed(void __iomem *base,
 		u32 offset, u16 value)
 {
 	*((volatile u16 *) (base + offset)) = value;
 }
 
-static inline u16 readw_relaxed(u32 base,
+static inline u16 readw_relaxed(void __iomem *base,
 		u32 offset)
 {
 	return *((volatile u16 *) (base + offset));
 }
 
-static inline void writel_relaxed(u32 base,
+static inline void writel_relaxed(void __iomem *base,
 		u32 offset, u32 value)
 {
 	*((volatile u32 *) (base + offset)) = value;
 }
 
-static inline u32 readl_relaxed(u32 base,
+static inline u32 readl_relaxed(void __iomem *base,
 		u32 offset)
 {
 	return *((volatile u32 *) (base + offset));

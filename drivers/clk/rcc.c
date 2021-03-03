@@ -98,62 +98,62 @@ static void system_clock_init(void)
 	u32 reg;
 
 	/* Make sure PLLs are disabled */
-	reg = readl((u32) the_rcc->base, RCC_CR);
+	reg = readl(the_rcc->base, RCC_CR);
 	reg &= ~(RCC_CR_PLLON | RCC_CR_PLL2SON);
-	writel((u32) the_rcc->base, RCC_CR, reg);
+	writel(the_rcc->base, RCC_CR, reg);
 
 	/* Enable HSE */
 	reg |= RCC_CR_HSEON;
-	writel((u32) the_rcc->base, RCC_CR, reg);
+	writel(the_rcc->base, RCC_CR, reg);
 
 	/* Poll for HSERDY */
 	while (!(reg & RCC_CR_HSERDY))
-		reg = readl((u32) the_rcc->base, RCC_CR);
+		reg = readl(the_rcc->base, RCC_CR);
 
-	reg = readl((u32) the_rcc->base, RCC_PLLCFGR);
+	reg = readl(the_rcc->base, RCC_PLLCFGR);
 	reg &= RCC_PLLCFGR_MASK;
 	reg |= RCC_PLLCFGR_PLLM(4) | RCC_PLLCFGR_PLLN(336) |
 		RCC_PLLCFGR_PLLP(1) | RCC_PLLCFGR_PLLQ(14) |
 		RCC_PLLCFGR_PLLSRC;
-	writel((u32) the_rcc->base, RCC_PLLCFGR, reg);
+	writel(the_rcc->base, RCC_PLLCFGR, reg);
 
 	/* enable PLL */
-	reg = readl((u32) the_rcc->base, RCC_CR);
+	reg = readl(the_rcc->base, RCC_CR);
 	reg |= RCC_CR_PLLON;
-	writel((u32) the_rcc->base, RCC_CR, reg);
+	writel(the_rcc->base, RCC_CR, reg);
 
 	/* Poll for PLLRDY */
 	while (!(reg & RCC_CR_PLLRDY))
-		reg = readl((u32) the_rcc->base, RCC_CR);
+		reg = readl(the_rcc->base, RCC_CR);
 
 	/* setup prescalers */
 	reg &= ~(RCC_CFGR_HPRE_MASK | RCC_CFGR_PPRE1_MASK |
 			RCC_CFGR_PPRE2_MASK);
 	reg |= RCC_CFGR_PPRE1(RCC_CFGR_PPRE_DIV4) |
 		RCC_CFGR_PPRE2(RCC_CFGR_PPRE_DIV2);
-	writel((u32) the_rcc->base, RCC_CFGR, reg);
+	writel(the_rcc->base, RCC_CFGR, reg);
 
 	/* set sysclk source to PLL */
-	reg = readl((u32) the_rcc->base, RCC_CFGR);
+	reg = readl(the_rcc->base, RCC_CFGR);
 	reg &= ~RCC_CFGR_SW_MASK;
 	reg |= RCC_CFGR_SW(RCC_CFGR_SW_PLL);
-	writel((u32) the_rcc->base, RCC_CFGR, reg);
+	writel(the_rcc->base, RCC_CFGR, reg);
 
 	while (RCC_CFGR_SWS(reg) != 2)
-		reg = readl((u32) the_rcc->base, RCC_CFGR);
+		reg = readl(the_rcc->base, RCC_CFGR);
 
-	reg = readl((u32) the_rcc->base, RCC_CR);
+	reg = readl(the_rcc->base, RCC_CR);
 	reg &= ~RCC_CR_HSION;
-	writel((u32) the_rcc->base, RCC_CR, reg);
+	writel(the_rcc->base, RCC_CR, reg);
 }
 
 int clk_enable(u32 offset, u32 mask)
 {
 	u32 reg;
 
-	reg = readl((u32) the_rcc->base, offset);
+	reg = readl(the_rcc->base, offset);
 	reg |= mask;
-	writel((u32) the_rcc->base, offset, reg);
+	writel(the_rcc->base, offset, reg);
 
 	return 0;
 }
@@ -162,9 +162,9 @@ void clk_disable(u32 offset, u32 mask)
 {
 	u32 reg;
 
-	reg = readl((u32) the_rcc->base, offset);
+	reg = readl(the_rcc->base, offset);
 	reg &= ~mask;
-	writel((u32) the_rcc->base, offset, reg);
+	writel(the_rcc->base, offset, reg);
 }
 
 static int rcc_probe(struct device *dev)

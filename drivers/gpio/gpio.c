@@ -62,42 +62,42 @@ static void gpio_configure_pinmux(struct gpio *gpio)
 			continue;
 
 		/* configure pin mode */
-		reg = readl((u32) gpio->base, GPIO_MODER);
+		reg = readl(gpio->base, GPIO_MODER);
 		reg &= ~(3 << (pin << 1));
 		reg |= (pinconf->mode << (pin << 1));
-		writel((u32) gpio->base, GPIO_MODER, reg);
+		writel(gpio->base, GPIO_MODER, reg);
 
 		/* configure pin type */
-		reg = readl((u32) gpio->base, GPIO_OTYPER);
+		reg = readl(gpio->base, GPIO_OTYPER);
 		if (pinconf->type)
 			reg |= BIT(pin);
 		else
 			reg &= ~BIT(pin);
-		writel((u32) gpio->base, GPIO_OTYPER, reg);
+		writel(gpio->base, GPIO_OTYPER, reg);
 
 		/* configure pin speed */
-		reg = readl((u32) gpio->base, GPIO_OSPEEDR);
+		reg = readl(gpio->base, GPIO_OSPEEDR);
 		reg &= ~(3 << (pin << 1));
 		reg |= (pinconf->speed << (pin << 1));
-		writel((u32) gpio->base, GPIO_OSPEEDR, reg);
+		writel(gpio->base, GPIO_OSPEEDR, reg);
 
 		/* configure pin pull-up/down */
-		reg = readl((u32) gpio->base, GPIO_PUPDR);
+		reg = readl(gpio->base, GPIO_PUPDR);
 		reg &= ~(3 << (pin << 1));
 		reg |= (pinconf->pull_up_down << (pin << 1));
-		writel((u32) gpio->base, GPIO_PUPDR, reg);
+		writel(gpio->base, GPIO_PUPDR, reg);
 
 		/* configure pin function */
 		if (pin > 7) {
-			reg = readl((u32) gpio->base, GPIO_AFRH);
+			reg = readl(gpio->base, GPIO_AFRH);
 			reg &= ~(0x0f << ((pin - 8) << 2));
 			reg |= (pinconf->function << ((pin - 8) << 2));
-			writel((u32) gpio->base, GPIO_AFRH, reg);
+			writel(gpio->base, GPIO_AFRH, reg);
 		} else {
-			reg = readl((u32) gpio->base, GPIO_AFRL);
+			reg = readl(gpio->base, GPIO_AFRL);
 			reg &= ~(0x0f << (pin << 2));
 			reg |= (pinconf->function << (pin << 2));
-			writel((u32) gpio->base, GPIO_AFRL, reg);
+			writel(gpio->base, GPIO_AFRL, reg);
 		}
 	}
 }

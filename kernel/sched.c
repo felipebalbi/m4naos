@@ -27,9 +27,11 @@
 #include <m4naos/kernel.h>
 #include <m4naos/sched.h>
 
+void __iomem *scb = (void __iomem *) SCB_BASE;
+
 void __schedule(void)
 {
-	writel(SCB_BASE, SCB_ICSR, SCB_ICSR_PENDSVSET);
+	writel(scb, SCB_ICSR, SCB_ICSR_PENDSVSET);
 }
 
 void schedule(void)

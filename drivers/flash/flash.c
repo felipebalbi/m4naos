@@ -52,7 +52,7 @@ static int flash_probe(struct device *dev)
 	}
 
 	/* Enable Icache and Dcache, waitstate = 5 */
-	writel((u32) base, FLASH_ACR, FLASH_ACR_DCEN | FLASH_ACR_ICEN
+	writel(base, FLASH_ACR, FLASH_ACR_DCEN | FLASH_ACR_ICEN
 			| FLASH_ACR_PRFTEN | FLASH_ACR_LATENCY(5));
 
 	return 0;

@@ -37,8 +37,8 @@ static void __iomem *base;
 
 static void __uart_putch(char c)
 {
-	while (!(readl((u32) base, USART_SR) & BIT(6)));
-	writeb((u32) base, USART_DR, c);
+	while (!(readl(base, USART_SR) & BIT(6)));
+	writeb(base, USART_DR, c);
 }
 
 static void __uart_puts(const char *str)
@@ -70,25 +70,25 @@ static int uart_probe(struct device *dev)
 		goto err0;
 	}
 
-	reg = readl((u32) base, USART_CR1);
+	reg = readl(base, USART_CR1);
 	reg |= 	BIT(13); /* UE */
 	reg &= ~BIT(12); /* M */
-	writel((u32) base, USART_CR1, reg);
+	writel(base, USART_CR1, reg);
 
-	reg = readl((u32) base, USART_CR2);
+	reg = readl(base, USART_CR2);
 	reg &= ~(3 << 12); /* 1 stop bit */
-	writel((u32) base, USART_CR2, reg);
+	writel(base, USART_CR2, reg);
 
 	/*
 	 * According to Table 137, page 982 on STM32F405 reference manual, the
 	 * following results in a baud rate of 10.5Mbps with an error of 0%.
 	 */
 	reg = 0x10; /* 1.0 */
-	writel((u32) base, USART_BRR, reg);
+	writel(base, USART_BRR, reg);
 
-	reg = readl((u32) base, USART_CR1);
+	reg = readl(base, USART_CR1);
 	reg |= 	BIT(15) | BIT(3); /* OVER8 | TE */
-	writel((u32) base, USART_CR1, reg);
+	writel(base, USART_CR1, reg);
 
 	return 0;
 
