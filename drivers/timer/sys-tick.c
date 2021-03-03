@@ -17,6 +17,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <m4naos/hardware.h>
 #include <m4naos/io.h>
@@ -54,8 +55,23 @@ void sys_tick_handler(void)
 
 static int timer_init(void)
 {
+	void __iomem *base;
+	void __iomem *scb;
 	u32 reload;
 	u32 csr;
+	int ret;
+
+	base = ioremap(SYST_BASE);
+	if (!base) {
+		ret = -ENOMEM;
+		goto err0;
+	}
+
+	scb = ioremap(SCB_BASE);
+	if (!scb) {
+		ret = -ENOMEM;
+		goto err0;
+	}
 
 	/*
 	 * We want a tick every 1ms, so let's calculate how many
@@ -63,24 +79,27 @@ static int timer_init(void)
 	 */
 	reload = 168000000 / 1000;
 
-	writel(SYST_BASE, SYST_RVR, reload - 1);
+	writel(base, SYST_RVR, reload - 1);
 
 	/* writing anything to clear current value */
-	writel(SYST_BASE, SYST_CVR, 0);
+	writel(base, SYST_CVR, 0);
 
 	/*
 	 * We know we're just starting out and timer is disabled. So just enable
 	 * it and get it over with.
 	 */
 	csr = SYST_CSR_CLKSOURCE;
-	writel(SYST_BASE, SYST_CSR, csr);
+	writel(base, SYST_CSR, csr);
 	csr |= SYST_CSR_TICKINT;
-	writel(SYST_BASE, SYST_CSR, csr);
+	writel(base, SYST_CSR, csr);
 	csr |= SYST_CSR_ENABLE;
-	writel(SYST_BASE, SYST_CSR, csr);
+	writel(base, SYST_CSR, csr);
 
-	writel(SCB_BASE, SCB_SHPR3, 0x00ff0000);
+	writel(scb, SCB_SHPR3, 0x00ff0000);
 
 	return 0;
+
+err0:
+	return ret;
 }
 postcore_init(timer_init);
