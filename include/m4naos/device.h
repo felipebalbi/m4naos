@@ -32,6 +32,7 @@ struct device {
 	u32		base;
 	int		status;
 	void		*drvdata;
+	const void	*platform_data;
 };
 
 static inline void dev_set_drvdata(struct device *dev, void *data)
