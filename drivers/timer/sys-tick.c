@@ -83,4 +83,4 @@ static int timer_init(void)
 
 	return 0;
 }
-subsys_init(timer_init);
+postcore_init(timer_init);
