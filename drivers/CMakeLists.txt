@@ -3,6 +3,7 @@
 add_subdirectory(base)
 add_subdirectory(pm)
 add_subdirectory(clk)
+add_subdirectory(flash)
 add_subdirectory(timer)
 add_subdirectory(gpio)
 add_subdirectory(tty)

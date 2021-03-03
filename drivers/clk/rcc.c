@@ -133,9 +133,6 @@ static void system_clock_init(void)
 		RCC_CFGR_PPRE2(RCC_CFGR_PPRE_DIV2);
 	writel((u32) the_rcc->base, RCC_CFGR, reg);
 
-	/* Enable Icache and Dcache, waitstate = 5 */
-	writel(AHB1_FLASH, 0, BIT(10) | BIT(9) | 5);
-
 	/* set sysclk source to PLL */
 	reg = readl((u32) the_rcc->base, RCC_CFGR);
 	reg &= ~RCC_CFGR_SW_MASK;
