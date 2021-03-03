@@ -143,9 +143,9 @@ static void system_clock_init(void)
 	writel((u32) the_rcc->base, RCC_CFGR, reg);
 
 	while (RCC_CFGR_SWS(reg) != 2)
-		reg = readl(AHB1_RCC, RCC_CFGR);
+		reg = readl((u32) the_rcc->base, RCC_CFGR);
 
-	reg = readl(AHB1_RCC, RCC_CR);
+	reg = readl((u32) the_rcc->base, RCC_CR);
 	reg &= ~RCC_CR_HSION;
 	writel((u32) the_rcc->base, RCC_CR, reg);
 }
