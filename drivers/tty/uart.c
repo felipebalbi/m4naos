@@ -17,6 +17,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <m4naos/kernel.h>
 #include <m4naos/device.h>
@@ -32,10 +33,12 @@
 #define USART_CR1	0x0c
 #define USART_CR2	0x10
 
+static void __iomem *base;
+
 static void __uart_putch(char c)
 {
-	while (!(readl(APB2_USART1, USART_SR) & BIT(6)));
-	writeb(APB2_USART1, USART_DR, c);
+	while (!(readl((u32) base, USART_SR) & BIT(6)));
+	writeb((u32) base, USART_DR, c);
 }
 
 static void __uart_puts(const char *str)
@@ -57,30 +60,40 @@ void uart_puts(const char *str)
 static int uart_probe(struct device *dev)
 {
 	u32 reg;
+	int ret;
 
 	clk_enable(dev->clk->offset, BIT(dev->clk->bit));
 
-	reg = readl(APB2_USART1, USART_CR1);
+	base = ioremap(dev->base);
+	if (!base) {
+		ret = -ENOMEM;
+		goto err0;
+	}
+
+	reg = readl((u32) base, USART_CR1);
 	reg |= 	BIT(13); /* UE */
 	reg &= ~BIT(12); /* M */
-	writel(APB2_USART1, USART_CR1, reg);
+	writel((u32) base, USART_CR1, reg);
 
-	reg = readl(APB2_USART1, USART_CR2);
+	reg = readl((u32) base, USART_CR2);
 	reg &= ~(3 << 12); /* 1 stop bit */
-	writel(APB2_USART1, USART_CR2, reg);
+	writel((u32) base, USART_CR2, reg);
 
 	/*
 	 * According to Table 137, page 982 on STM32F405 reference manual, the
 	 * following results in a baud rate of 10.5Mbps with an error of 0%.
 	 */
 	reg = 0x10; /* 1.0 */
-	writel(APB2_USART1, USART_BRR, reg);
+	writel((u32) base, USART_BRR, reg);
 
-	reg = readl(APB2_USART1, USART_CR1);
+	reg = readl((u32) base, USART_CR1);
 	reg |= 	BIT(15) | BIT(3); /* OVER8 | TE */
-	writel(APB2_USART1, USART_CR1, reg);
+	writel((u32) base, USART_CR1, reg);
 
 	return 0;
+
+err0:
+	return ret;
 }
 
 static struct driver uart_driver = {
