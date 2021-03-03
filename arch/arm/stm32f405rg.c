@@ -17,6 +17,7 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <m4naos/gpio.h>
 #include <m4naos/clk.h>
 #include <m4naos/device.h>
 #include <m4naos/hardware.h>
@@ -37,13 +38,14 @@ struct reset n##_reset __ccm  = {	\
 	.bit	= b,			\
 }
 
-#define DECLARE_DEVICE(b, n, r, c, s)	\
+#define DECLARE_DEVICE(b, n, r, c, s, p)\
 struct device n##_device __ccm = {	\
 	.base	= (b),			\
 	.name	= str(n),		\
 	.reset	= (r),			\
 	.clk	= (c),			\
 	.status	= (s),			\
+	.platform_data = (p),		\
 }
 
 /* APB1 */
@@ -99,35 +101,64 @@ static DECLARE_RESET(dac, 0x20, 29);
 static DECLARE_RESET(uart7, 0x20, 30);
 static DECLARE_RESET(uart8, 0x20, 31);
 
-static DECLARE_DEVICE(APB1_TIM2, timer2, &timer2_reset, &timer2_clk, true);
-static DECLARE_DEVICE(APB1_TIM3, timer3, &timer3_reset, &timer3_clk, true);
-static DECLARE_DEVICE(APB1_TIM4, timer4, &timer4_reset, &timer4_clk, true);
-static DECLARE_DEVICE(APB1_TIM5, timer5, &timer5_reset, &timer5_clk, true);
-static DECLARE_DEVICE(APB1_TIM6, timer6, &timer6_reset, &timer6_clk, true);
-static DECLARE_DEVICE(APB1_TIM7, timer7, &timer7_reset, &timer7_clk, true);
-static DECLARE_DEVICE(APB1_TIM12, timer12, &timer12_reset, &timer12_clk, true);
-static DECLARE_DEVICE(APB1_TIM13, timer13, &timer13_reset, &timer13_clk, true);
-static DECLARE_DEVICE(APB1_TIM14, timer14, &timer14_reset, &timer14_clk, true);
-static DECLARE_DEVICE(APB1_RTC, rtc, NULL, NULL, true);
-static DECLARE_DEVICE(APB1_WWDG, wwdg, &wwdg_reset, &wwdg_clk, true);
-static DECLARE_DEVICE(APB1_IWDG, iwdg, NULL, NULL, true);
-static DECLARE_DEVICE(APB1_I2S2EXT, i2s2ext, NULL, NULL, true);
-static DECLARE_DEVICE(APB1_SPI2_I2S2, spi2, &spi2_reset, &spi2_clk, true);
-static DECLARE_DEVICE(APB1_SPI3_I2S3, spi3, &spi3_reset, &spi3_clk, true);
-static DECLARE_DEVICE(APB1_I2S3EXT, i2s3ext, NULL, NULL, true);
-static DECLARE_DEVICE(APB1_USART2, usart2, &uart2_reset, &uart2_clk, false);
-static DECLARE_DEVICE(APB1_USART3, usart3, &uart3_reset, &uart3_clk, false);
-static DECLARE_DEVICE(APB1_UART4, uart4, &uart4_reset, &uart4_clk, false);
-static DECLARE_DEVICE(APB1_UART5, uart5, &uart5_reset, &uart5_clk, false);
-static DECLARE_DEVICE(APB1_I2C1, i2c1, &i2c1_reset, &i2c1_clk, true);
-static DECLARE_DEVICE(APB1_I2C2, i2c2, &i2c2_reset, &i2c2_clk, true);
-static DECLARE_DEVICE(APB1_I2C3, i2c3, &i2c3_reset, &i2c3_clk, true);
-static DECLARE_DEVICE(APB1_CAN1, can1, &can1_reset, &can1_clk, true);
-static DECLARE_DEVICE(APB1_CAN2, can2, &can2_reset, &can2_clk, true);
-static DECLARE_DEVICE(APB1_PWR, pwr, &pwr_reset, &pwr_clk, true);
-static DECLARE_DEVICE(APB1_DAC, dac, &dac_reset, &dac_clk, true);
-static DECLARE_DEVICE(APB1_UART7, uart7, &uart7_reset, &uart7_clk, false);
-static DECLARE_DEVICE(APB1_UART8, uart8, &uart8_reset, &uart8_clk, false);
+static DECLARE_DEVICE(APB1_TIM2, timer2, &timer2_reset, &timer2_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM3, timer3, &timer3_reset, &timer3_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM4, timer4, &timer4_reset, &timer4_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM5, timer5, &timer5_reset, &timer5_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM6, timer6, &timer6_reset, &timer6_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM7, timer7, &timer7_reset, &timer7_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM12, timer12, &timer12_reset, &timer12_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM13, timer13, &timer13_reset, &timer13_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_TIM14, timer14, &timer14_reset, &timer14_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_RTC, rtc, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(APB1_WWDG, wwdg, &wwdg_reset, &wwdg_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_IWDG, iwdg, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(APB1_I2S2EXT, i2s2ext, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(APB1_SPI2_I2S2, spi2, &spi2_reset, &spi2_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_SPI3_I2S3, spi3, &spi3_reset, &spi3_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_I2S3EXT, i2s3ext, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(APB1_USART2, usart2, &uart2_reset, &uart2_clk,
+		false, NULL);
+static DECLARE_DEVICE(APB1_USART3, usart3, &uart3_reset, &uart3_clk,
+		false, NULL);
+static DECLARE_DEVICE(APB1_UART4, uart4, &uart4_reset, &uart4_clk,
+		false, NULL);
+static DECLARE_DEVICE(APB1_UART5, uart5, &uart5_reset, &uart5_clk,
+		false, NULL);
+static DECLARE_DEVICE(APB1_I2C1, i2c1, &i2c1_reset, &i2c1_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_I2C2, i2c2, &i2c2_reset, &i2c2_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_I2C3, i2c3, &i2c3_reset, &i2c3_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_CAN1, can1, &can1_reset, &can1_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_CAN2, can2, &can2_reset, &can2_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_PWR, pwr, &pwr_reset, &pwr_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_DAC, dac, &dac_reset, &dac_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB1_UART7, uart7, &uart7_reset, &uart7_clk,
+		false, NULL);
+static DECLARE_DEVICE(APB1_UART8, uart8, &uart8_reset, &uart8_clk,
+		false, NULL);
 
 /* APB2 */
 static DECLARE_CLK(timer1, 0x44, 0);
@@ -154,18 +185,30 @@ static DECLARE_RESET(timer9, 0x24, 16);
 static DECLARE_RESET(timer10, 0x24, 17);
 static DECLARE_RESET(timer11, 0x24, 18);
 
-static DECLARE_DEVICE(APB2_TIM1, timer1, &timer1_reset, &timer1_clk, true);
-static DECLARE_DEVICE(APB2_TIM8, timer8, &timer8_reset, &timer8_clk, true);
-static DECLARE_DEVICE(APB2_USART1, usart1, &usart1_reset, &usart1_clk, true);
-static DECLARE_DEVICE(APB2_USART6, usart6, &usart6_reset, &usart6_clk, false);
-static DECLARE_DEVICE(APB2_ADC1_ADC2_ADC3, adc, &adc_reset, &adc_clk, true);
-static DECLARE_DEVICE(APB2_SDIO, sdio, &sdio_reset, &sdio_clk, true);
-static DECLARE_DEVICE(APB2_SPI1, spi1, &spi1_reset, &spi1_clk, true);
-static DECLARE_DEVICE(APB2_SYSCFG, syscfg, &syscfg_reset, &syscfg_clk, true);
-static DECLARE_DEVICE(APB2_EXTI, exti, NULL, NULL, true);
-static DECLARE_DEVICE(APB2_TIM9, timer9, &timer9_reset, &timer9_clk, true);
-static DECLARE_DEVICE(APB2_TIM10, timer10, &timer10_reset, &timer10_clk, true);
-static DECLARE_DEVICE(APB2_TIM11, timer11, &timer11_reset, &timer11_clk, true);
+static DECLARE_DEVICE(APB2_TIM1, timer1, &timer1_reset, &timer1_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_TIM8, timer8, &timer8_reset, &timer8_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_USART1, usart1, &usart1_reset, &usart1_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_USART6, usart6, &usart6_reset, &usart6_clk,
+		false, NULL);
+static DECLARE_DEVICE(APB2_ADC1_ADC2_ADC3, adc, &adc_reset, &adc_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_SDIO, sdio, &sdio_reset, &sdio_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_SPI1, spi1, &spi1_reset, &spi1_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_SYSCFG, syscfg, &syscfg_reset, &syscfg_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_EXTI, exti, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(APB2_TIM9, timer9, &timer9_reset, &timer9_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_TIM10, timer10, &timer10_reset, &timer10_clk,
+		true, NULL);
+static DECLARE_DEVICE(APB2_TIM11, timer11, &timer11_reset, &timer11_clk,
+		true, NULL);
 
 /* AHB1 */
 static DECLARE_CLK(usb_otg_hs, 0x30, 29);
@@ -199,24 +242,62 @@ static DECLARE_RESET(gpiob, 0x10, 1);
 static DECLARE_RESET(gpioa, 0x10, 0);
 
 static DECLARE_DEVICE(AHB1_USB_OTG_HS, usb_otg_hs, &usb_otg_hs_reset,
-		&usb_otg_hs_clk, true);
+		&usb_otg_hs_clk, true, NULL);
 static DECLARE_DEVICE(AHB1_ETHERNET_MAC, ethernet_mac, &ethernet_mac_reset,
-		&ethernet_mac_clk, true);
-static DECLARE_DEVICE(AHB1_DMA2, dma2, &dma2_reset, &dma2_clk, true);
-static DECLARE_DEVICE(AHB1_DMA1, dma1, &dma1_reset, &dma1_clk, true);
-static DECLARE_DEVICE(AHB1_BKPSRAM, bkpsram, NULL, NULL, true);
-static DECLARE_DEVICE(AHB1_FLASH, flash, NULL, NULL, true);
-static DECLARE_DEVICE(AHB1_RCC, rcc, NULL, NULL, true);
-static DECLARE_DEVICE(AHB1_CRC, crc, &crc_reset, &crc_clk, true);
-static DECLARE_DEVICE(AHB1_GPIOI, gpioi, &gpioi_reset, &gpioi_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOH, gpioh, &gpioh_reset, &gpioh_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOG, gpiog, &gpiog_reset, &gpiog_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOF, gpiof, &gpiof_reset, &gpiof_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOE, gpioe, &gpioe_reset, &gpioe_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOD, gpiod, &gpiod_reset, &gpiod_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOC, gpioc, &gpioc_reset, &gpioc_clk, true);
-static DECLARE_DEVICE(AHB1_GPIOB, gpiob, &gpiob_reset, &gpiob_clk, false);
-static DECLARE_DEVICE(AHB1_GPIOA, gpioa, &gpioa_reset, &gpioa_clk, false);
+		&ethernet_mac_clk, true, NULL);
+static DECLARE_DEVICE(AHB1_DMA2, dma2, &dma2_reset, &dma2_clk,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_DMA1, dma1, &dma1_reset, &dma1_clk,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_BKPSRAM, bkpsram, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_FLASH, flash, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_RCC, rcc, NULL, NULL,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_CRC, crc, &crc_reset, &crc_clk,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_GPIOI, gpioi, &gpioi_reset, &gpioi_clk,
+		false, NULL);
+static DECLARE_DEVICE(AHB1_GPIOH, gpioh, &gpioh_reset, &gpioh_clk,
+		false, NULL);
+static DECLARE_DEVICE(AHB1_GPIOG, gpiog, &gpiog_reset, &gpiog_clk,
+		false, NULL);
+static DECLARE_DEVICE(AHB1_GPIOF, gpiof, &gpiof_reset, &gpiof_clk,
+		false, NULL);
+static DECLARE_DEVICE(AHB1_GPIOE, gpioe, &gpioe_reset, &gpioe_clk,
+		false, NULL);
+static DECLARE_DEVICE(AHB1_GPIOD, gpiod, &gpiod_reset, &gpiod_clk,
+		false, NULL);
+static DECLARE_DEVICE(AHB1_GPIOC, gpioc, &gpioc_reset, &gpioc_clk,
+		true, NULL);
+static DECLARE_DEVICE(AHB1_GPIOB, gpiob, &gpiob_reset, &gpiob_clk,
+		false, NULL);
+
+static const struct gpio_pinconf gpioa_pa9_conf = {
+	.pin		= 9,
+	.mode		= GPIO_MODE_AF,
+	.function	= GPIO_FUNCTION(7),
+};
+
+static const struct gpio_pinconf gpioa_pa10_conf = {
+	.pin		= 10,
+	.mode		= GPIO_MODE_AF,
+	.function	= GPIO_FUNCTION(7),
+};
+
+static const struct gpio_pinconf *gpioa_pinconf[] = {
+	&gpioa_pa9_conf,
+	&gpioa_pa10_conf,
+};
+
+static const struct gpio_platform_data gpioa_platform_data = {
+	.pinconf	= gpioa_pinconf,
+	.num_pins	= 2,
+};
+
+static DECLARE_DEVICE(AHB1_GPIOA, gpioa, &gpioa_reset, &gpioa_clk,
+		true, &gpioa_platform_data);
 
 /* AHB2 */
 static DECLARE_CLK(dcmi, 0x34, 0);
@@ -227,17 +308,21 @@ static DECLARE_RESET(dcmi, 0x14, 0);
 static DECLARE_RESET(rng, 0x14, 6);
 static DECLARE_RESET(usb_otg_fs, 0x14, 7);
 
-static DECLARE_DEVICE(AHB2_DCMI, dcmi, &dcmi_reset, &dcmi_clk, true);
-static DECLARE_DEVICE(AHB2_RNG, rng, &rng_reset, &rng_clk, true);
+static DECLARE_DEVICE(AHB2_DCMI, dcmi, &dcmi_reset, &dcmi_clk,
+		true, NULL);
+static DECLARE_DEVICE(AHB2_RNG, rng, &rng_reset, &rng_clk,
+		true, NULL);
 static DECLARE_DEVICE(AHB2_USB_OTG_FS, usb_otg_fs, &usb_otg_fs_reset,
-		&usb_otg_fs_clk, true);
+		&usb_otg_fs_clk,
+		true, NULL);
 
 /* AHB3 */
 static DECLARE_CLK(fsmc, 0x38, 0);
 
 static DECLARE_RESET(fsmc, 0x18, 0);
 
-static DECLARE_DEVICE(AHB3_FSMC_CTRL, fsmc, &fsmc_reset, &fsmc_clk, true);
+static DECLARE_DEVICE(AHB3_FSMC_CTRL, fsmc, &fsmc_reset, &fsmc_clk,
+		true, NULL);
 
 static struct device *devices[] __ccm __used = {
 	/* APB1 */

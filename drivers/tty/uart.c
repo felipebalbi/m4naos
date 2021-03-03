@@ -58,16 +58,7 @@ static int uart_probe(struct device *dev)
 {
 	u32 reg;
 
-	clk_enable(RCC_AHB1ENR, BIT(0));
 	clk_enable(dev->clk->offset, BIT(dev->clk->bit));
-
-	reg = readl(AHB1_GPIOA, 0x00);
-	reg |= (2 << 18);
-	writel(AHB1_GPIOA, 0x00, reg);
-
-	reg = readl(AHB1_GPIOA, 0x24);
-	reg |= (7 << 4);
-	writel(AHB1_GPIOA, 0x24, reg);
 
 	reg = readl(APB2_USART1, USART_CR1);
 	reg |= 	BIT(13); /* UE */
