@@ -17,7 +17,66 @@
  * along with M4naos.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <errno.h>
 #include <m4naos/kernel.h>
 #include <m4naos/hardware.h>
 #include <m4naos/irq.h>
 
+/*
+ * Specific to STM32F07.
+ *
+ * All Interrupts except for M4-generic (Reset, NMI, HardFault, MemManage,
+ * BusFault, UsageFault, SVCall, DebugMonitor, PendSV, and SysTick
+ */
+#define NUM_IRQS		(82)
+
+struct irq_desc {
+	irq_handler_t handler;
+	void *cookie;
+	unsigned int flags;
+	const char *name;
+};
+
+static struct irq_desc irq_all_descs[NUM_IRQS];
+
+int request_irq(unsigned int irq, irq_handler_t handler,
+		unsigned int flags, const char *name, void *cookie)
+{
+	struct irq_desc *desc = &irq_all_descs[irq];
+
+	if (desc->handler)
+		return -EBUSY;
+
+	desc->handler = handler;
+	desc->cookie = cookie;
+	desc->flags = flags;
+	desc->name = name;
+
+	return 0;
+}
+
+void release_irq(unsigned int irq, void *cookie)
+{
+	struct irq_desc *desc = &irq_all_descs[irq];
+
+	if (!desc->handler)
+		return;
+
+	/* Do we print an error? */
+	if (desc->cookie != cookie)
+		return;
+
+	desc->handler = NULL;
+	desc->cookie = NULL;
+	desc->flags = 0;
+	desc->name = NULL;
+}
+
+int __naked irq_generic_handler(void)
+{
+	/* read current IRQ number */
+
+	/* check correct handler from our table */
+
+	/* call handler passing correct arguments */
+}

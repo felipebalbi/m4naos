@@ -22,4 +22,18 @@
 
 #include <m4naos/kernel.h>
 
+/**
+ * enum irqreturn
+ * @IRQ_NONE: irq was not handled
+ * @IRQ_HANDLED: irq was properly handled
+ */
+enum irqreturn {
+	IRQ_NONE		= 0,
+	IRQ_HANDLED		= 1,
+};
+
+typedef enum irqreturn irqreturn_t;
+
+typedef irqreturn_t (*irq_handler_t)(int, void *);
+
 #endif /* __M4NAOS_IRQ_H */
