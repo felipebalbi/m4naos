@@ -34,11 +34,41 @@
    - State "DONE"       from "TODO"       [2021-02-26 Fri 20:01]
    :END:
 
-** TODO IRQ Subsystem [0/2]
+** TODO IRQ Subsystem [3/4]
 
-*** TODO Implement generic IRQ handler
+*** DONE Implement basic types
+    CLOSED: [2021-06-25 Fri 18:23]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2021-06-25 Fri 18:23] \\
+      Completed
+    :END:
 
-*** TODO Implement IRQ handling thread
+*** DONE Trap device interrupts to stub handler
+    CLOSED: [2021-06-25 Fri 18:24]
+    :LOGBOOK:
+    - State "DONE"       from "TODO"       [2021-06-25 Fri 18:24] \\
+      Completed
+    :END:
+
+*** TODO Implement generic IRQ handler [0/4]
+
+**** TODO Figure out how to read current IRQ number
+
+**** TODO Check if $this IRQ is enabled
+
+**** TODO Call handler with correct arguments
+
+**** TODO Test with GPIO Interrupts
+
+*** CANCELED Implement IRQ handling thread
+    CLOSED: [2021-06-25 Fri 18:26]
+    :LOGBOOK:
+    - State "CANCELED"   from "TODO"       [2021-06-25 Fri 18:26] \\
+      We're not going to use IRQ handling threads. At least not for the time
+      being. This is because IRQs have controllable priorities and higher
+      priority interrupts can already preempt lower priority handlers; this
+      is given to us for free by the HW.
+    :END:
 
 ** TODO Input Subsystem
 ** TODO USB Subsystem
