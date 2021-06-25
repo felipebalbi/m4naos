@@ -74,9 +74,11 @@ void release_irq(unsigned int irq, void *cookie)
 
 void irq_generic_handler(int irq)
 {
-	/* read current IRQ number */
+	struct irq_desc *desc = &irq_all_descs[irq];
 
-	/* check correct handler from our table */
+	/* Trigger fault? */
+	if (!desc->handler)
+		return;
 
-	/* call handler passing correct arguments */
+	desc->handler(irq, desc->cookie);
 }

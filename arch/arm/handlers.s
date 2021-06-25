@@ -94,8 +94,17 @@ PROC(default_handler)
 ENDPROC(default_handler)
 
 PROC(asm_do_irq)
-	ldr	r0, =irq_generic_handler
-	bx	r0
+	mrs	r0, ipsr
+
+	/*
+	 * IRQ0 sits starts at vector #16.
+	 * There's an assumption here that the HW works as specified, i.e. we
+	 * won't get spurious interrupts and this handler won't be called for
+	 * non-IRQ0+ exceptions.
+	 */
+	sub	r0, r0, #16
+	ldr	r3, =irq_generic_handler
+	bx	r3
 ENDPROC(asm_do_irq)
 
 
