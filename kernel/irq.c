@@ -72,7 +72,7 @@ void release_irq(unsigned int irq, void *cookie)
 	desc->name = NULL;
 }
 
-int __naked irq_generic_handler(void)
+void irq_generic_handler(int irq)
 {
 	/* read current IRQ number */
 
