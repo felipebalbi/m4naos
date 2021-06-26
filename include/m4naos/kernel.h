@@ -102,6 +102,7 @@ typedef int (*late_initcall_t)(void);
 
 #define div_round_up(n, d)	(((n) + (d) - 1) / (d))
 #define ARRAY_SIZE(arr)		((sizeof((arr)))/(sizeof((arr)[0])))
+#define BIT(n)			(1 << (n))
 
 #define NSECS_IN_SEC		1000000000
 

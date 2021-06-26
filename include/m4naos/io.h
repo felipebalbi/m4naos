@@ -71,6 +71,4 @@ static inline u32 readl_relaxed(void __iomem *base,
 #define writel(b, o, v)	({ __dsb(); writel_relaxed((b), (o), (v)); })
 #define readl(b, o)	({ u32 __v = readl_relaxed((b), (o)); __dsb(); __v; })
 
-#define BIT(n)		(1 << (n))
-
 #endif /* __M4NAOS_IO_H */
