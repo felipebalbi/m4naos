@@ -50,7 +50,7 @@
       Completed
     :END:
 
-*** TODO Implement generic IRQ handler [4/6]
+*** TODO Implement generic IRQ handler [5/7]
 
 **** DONE Figure out how to read current IRQ number
      CLOSED: [2021-06-25 Fri 18:35]
@@ -81,7 +81,14 @@
        Completed
      :END:
 
-**** TODO Implement IRQ setup routine to process `flags' and configure the NVIC
+**** DONE Implement IRQ setup routine to enable IRQ
+     CLOSED: [2021-06-26 Sat 17:49]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-26 Sat 17:49] \\
+       Completed
+     :END:
+
+**** TODO Check how to configure IRQ trigger types
 
 **** TODO Test with GPIO Interrupts
 

@@ -32,6 +32,12 @@ enum irqreturn {
 	IRQ_HANDLED		= 1,
 };
 
+#define IRQ_TRIGGER_TYPE_NONE		0
+#define IRQ_TRIGGER_TYPE_EDGE_RISING	BIT(0)
+#define IRQ_TRIGGER_TYPE_EDGE_FALLING	BIT(1)
+#define IRQ_TRIGGER_TYPE_LEVEL_HIGH	BIT(2)
+#define IRQ_TRIGGER_TYPE_LEVEL_LOW	BIT(3)
+
 typedef enum irqreturn irqreturn_t;
 
 typedef irqreturn_t (*irq_handler_t)(int, void *);

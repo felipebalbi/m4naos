@@ -23,6 +23,14 @@
 #include <m4naos/irq.h>
 #include <m4naos/io.h>
 
+#define NVIC_ISER(n)			((n) + 0x0000)
+#define NVIC_ICER(n)			((n) + 0x0080)
+#define NVIC_ISPR(n)			((n) + 0x0100)
+#define NVIC_ICPR(n)			((n) + 0x0180)
+#define NVIC_IABR(n)			((n) + 0x0200)
+#define NVIC_IPR(n)			((n) + 0x0300)
+#define NVIC_STIR			0x0e00
+
 /*
  * Specific to STM32F07.
  *
@@ -45,6 +53,7 @@ struct irq_desc {
 };
 
 static struct irq_desc irq_all_descs[NUM_IRQS];
+static void __iomem *chip;
 
 static int irq_chip_irqn_to_reg(int irq)
 {
@@ -61,7 +70,7 @@ static void irq_chip_disable_irq(int irq)
 	u32 offset = irq_chip_irqn_to_reg(irq);
 	u32 bit = irq_chip_irqn_to_bit(irq);
 
-	writel((void *)0xe000e180, offset, bit);
+	writel(chip, NVIC_ICER(offset), bit);
 }
 
 static void irq_chip_mark_spurious(struct irq_desc *desc, int irq)
@@ -76,7 +85,7 @@ static int irq_chip_is_pending(int irq)
 	u32 bit = irq_chip_irqn_to_bit(irq);
 	u32 reg;
 
-	reg = readl((void *)0xe000e280, offset);
+	reg = readl(chip, NVIC_ICPR(offset));
 
 	return reg & bit;
 }
@@ -84,6 +93,28 @@ static int irq_chip_is_pending(int irq)
 static int irq_desc_has_handler(struct irq_desc *desc)
 {
 	return !!desc->handler;
+}
+
+static int irq_chip_setup_irq(int irq, unsigned int flags)
+{
+	u32 offset = irq_chip_irqn_to_reg(irq);
+	u32 bit = irq_chip_irqn_to_bit(irq);
+
+	if (!flags)
+		return -EINVAL;
+
+	/* Check what to do with `flags' */
+	writel(chip, NVIC_ISER(offset), bit);
+
+	return 0;
+}
+
+static void irq_chip_teardown_irq(int irq)
+{
+	u32 offset = irq_chip_irqn_to_reg(irq);
+	u32 bit = irq_chip_irqn_to_bit(irq);
+
+	writel(chip, NVIC_ICER(offset), bit);
 }
 
 void irq_generic_handler(int irq)
@@ -115,7 +146,7 @@ int request_irq(unsigned int irq, irq_handler_t handler,
 	desc->flags = flags;
 	desc->name = name;
 
-	return 0;
+	return irq_chip_setup_irq(irq, flags);
 }
 
 void release_irq(unsigned int irq, void *cookie)
@@ -129,9 +160,21 @@ void release_irq(unsigned int irq, void *cookie)
 	if (desc->cookie != cookie)
 		return;
 
+	irq_chip_teardown_irq(irq);
+
 	desc->handler = NULL;
 	desc->cookie = NULL;
 	desc->flags = 0;
 	desc->name = NULL;
 	desc->spurious = 0;
 }
+
+static int irq_chip_init(void)
+{
+	chip = ioremap(NVIC_BASE);
+	if (!chip)
+		return -ENOMEM;
+
+	return 0;
+}
+postcore_init(irq_chip_init);
