@@ -21,6 +21,7 @@
 #include <m4naos/kernel.h>
 #include <m4naos/hardware.h>
 #include <m4naos/irq.h>
+#include <m4naos/io.h>
 
 /*
  * Specific to STM32F07.
@@ -28,13 +29,19 @@
  * All Interrupts except for M4-generic (Reset, NMI, HardFault, MemManage,
  * BusFault, UsageFault, SVCall, DebugMonitor, PendSV, and SysTick
  */
-#define NUM_IRQS		(82)
+#define NUM_IRQS			82
+
+#define IRQ_TOO_MANY_SPURIOUS		100000
+#define IRQ_CHIP_IRQS_PER_REGISTER	32
+#define IRQ_CHIP_IRQ_BIT_MASK		0x1f
 
 struct irq_desc {
 	irq_handler_t handler;
 	void *cookie;
 	unsigned int flags;
 	const char *name;
+
+	int spurious;
 };
 
 static struct irq_desc irq_all_descs[NUM_IRQS];
@@ -70,6 +77,47 @@ void release_irq(unsigned int irq, void *cookie)
 	desc->cookie = NULL;
 	desc->flags = 0;
 	desc->name = NULL;
+	desc->spurious = 0;
+}
+
+static int irq_chip_irqn_to_reg(int irq)
+{
+	return irq / IRQ_CHIP_IRQS_PER_REGISTER;
+}
+
+static int irq_chip_irqn_to_bit(int irq)
+{
+	return BIT(irq & IRQ_CHIP_IRQ_BIT_MASK);
+}
+
+static void irq_chip_disable_irq(int irq)
+{
+	u32 offset = irq_chip_irqn_to_reg(irq);
+	u32 bit = irq_chip_irqn_to_bit(irq);
+
+	writel((void *)0xe000e180, offset, bit);
+}
+
+static void irq_chip_mark_spurious(struct irq_desc *desc, int irq)
+{
+	if (desc->spurious++ > IRQ_TOO_MANY_SPURIOUS)
+		irq_chip_disable_irq(irq);
+}
+
+static int irq_chip_is_pending(int irq)
+{
+	u32 offset = irq_chip_irqn_to_reg(irq);
+	u32 bit = irq_chip_irqn_to_bit(irq);
+	u32 reg;
+
+	reg = readl((void *)0xe000e280, offset);
+
+	return reg & bit;
+}
+
+static int irq_desc_has_handler(struct irq_desc *desc)
+{
+	return !!desc->handler;
 }
 
 void irq_generic_handler(int irq)
@@ -77,8 +125,10 @@ void irq_generic_handler(int irq)
 	struct irq_desc *desc = &irq_all_descs[irq];
 
 	/* Trigger fault? */
-	if (!desc->handler)
+	if (!irq_desc_has_handler(desc) || !irq_chip_is_pending(irq)) {
+		irq_chip_mark_spurious(desc, irq);
 		return;
+	}
 
 	desc->handler(irq, desc->cookie);
 }
