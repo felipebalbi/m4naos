@@ -50,7 +50,7 @@
       Completed
     :END:
 
-*** TODO Implement generic IRQ handler [3/4]
+*** TODO Implement generic IRQ handler [4/6]
 
 **** DONE Figure out how to read current IRQ number
      CLOSED: [2021-06-25 Fri 18:35]
@@ -71,6 +71,13 @@
      CLOSED: [2021-06-26 Sat 10:25]
      :LOGBOOK:
      - State "DONE"       from "TODO"       [2021-06-26 Sat 10:25] \\
+       Completed
+     :END:
+
+**** DONE Treat desc->handler() return value
+     CLOSED: [2021-06-26 Sat 17:07]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-26 Sat 17:07] \\
        Completed
      :END:
 

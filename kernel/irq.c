@@ -46,40 +46,6 @@ struct irq_desc {
 
 static struct irq_desc irq_all_descs[NUM_IRQS];
 
-int request_irq(unsigned int irq, irq_handler_t handler,
-		unsigned int flags, const char *name, void *cookie)
-{
-	struct irq_desc *desc = &irq_all_descs[irq];
-
-	if (desc->handler)
-		return -EBUSY;
-
-	desc->handler = handler;
-	desc->cookie = cookie;
-	desc->flags = flags;
-	desc->name = name;
-
-	return 0;
-}
-
-void release_irq(unsigned int irq, void *cookie)
-{
-	struct irq_desc *desc = &irq_all_descs[irq];
-
-	if (!desc->handler)
-		return;
-
-	/* Do we print an error? */
-	if (desc->cookie != cookie)
-		return;
-
-	desc->handler = NULL;
-	desc->cookie = NULL;
-	desc->flags = 0;
-	desc->name = NULL;
-	desc->spurious = 0;
-}
-
 static int irq_chip_irqn_to_reg(int irq)
 {
 	return irq / IRQ_CHIP_IRQS_PER_REGISTER;
@@ -123,6 +89,7 @@ static int irq_desc_has_handler(struct irq_desc *desc)
 void irq_generic_handler(int irq)
 {
 	struct irq_desc *desc = &irq_all_descs[irq];
+	irqreturn_t ret;
 
 	/* Trigger fault? */
 	if (!irq_desc_has_handler(desc) || !irq_chip_is_pending(irq)) {
@@ -130,5 +97,41 @@ void irq_generic_handler(int irq)
 		return;
 	}
 
-	desc->handler(irq, desc->cookie);
+	ret = desc->handler(irq, desc->cookie);
+	if (ret != IRQ_HANDLED)
+		irq_chip_mark_spurious(desc, irq);
+}
+
+int request_irq(unsigned int irq, irq_handler_t handler,
+		unsigned int flags, const char *name, void *cookie)
+{
+	struct irq_desc *desc = &irq_all_descs[irq];
+
+	if (desc->handler)
+		return -EBUSY;
+
+	desc->handler = handler;
+	desc->cookie = cookie;
+	desc->flags = flags;
+	desc->name = name;
+
+	return 0;
+}
+
+void release_irq(unsigned int irq, void *cookie)
+{
+	struct irq_desc *desc = &irq_all_descs[irq];
+
+	if (!desc->handler)
+		return;
+
+	/* Do we print an error? */
+	if (desc->cookie != cookie)
+		return;
+
+	desc->handler = NULL;
+	desc->cookie = NULL;
+	desc->flags = 0;
+	desc->name = NULL;
+	desc->spurious = 0;
 }
