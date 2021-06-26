@@ -50,7 +50,7 @@
       Completed
     :END:
 
-*** TODO Implement generic IRQ handler [1/4]
+*** TODO Implement generic IRQ handler [3/4]
 
 **** DONE Figure out how to read current IRQ number
      CLOSED: [2021-06-25 Fri 18:35]
@@ -60,9 +60,21 @@
        be in the lowest byte.
      :END:
 
-**** TODO Check if $this IRQ is enabled
+**** DONE Check if $this IRQ is enabled
+     CLOSED: [2021-06-26 Sat 10:25]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-26 Sat 10:25] \\
+       Completed.
+     :END:
 
-**** TODO Call handler with correct arguments
+**** DONE Call handler with correct arguments
+     CLOSED: [2021-06-26 Sat 10:25]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-26 Sat 10:25] \\
+       Completed
+     :END:
+
+**** TODO Implement IRQ setup routine to process `flags' and configure the NVIC
 
 **** TODO Test with GPIO Interrupts
 
