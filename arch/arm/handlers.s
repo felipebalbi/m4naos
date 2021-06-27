@@ -97,7 +97,8 @@ PROC(asm_do_irq)
 	mrs	r0, ipsr
 
 	/*
-	 * IRQ0 sits starts at vector #16.
+	 * IRQ0 starts at vector #16.
+	 *
 	 * There's an assumption here that the HW works as specified, i.e. we
 	 * won't get spurious interrupts and this handler won't be called for
 	 * non-IRQ0+ exceptions.
