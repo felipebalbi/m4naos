@@ -50,7 +50,7 @@ struct irq_desc {
 	int spurious;
 };
 
-static struct irq_desc irq_all_descs[NUM_IRQS];
+static struct irq_desc irq_all_descs[NUM_IRQS] __ccm;
 static void __iomem *chip;
 
 static int irq_chip_irqn_to_reg(int irq)
