@@ -47,8 +47,6 @@ struct irq_desc {
 	irq_handler_t handler;
 	void *cookie;
 	unsigned int flags;
-	const char *name;
-
 	int spurious;
 };
 
@@ -123,7 +121,7 @@ void irq_generic_handler(int irq)
 }
 
 int request_irq(unsigned int irq, irq_handler_t handler,
-		unsigned int flags, const char *name, void *cookie)
+		unsigned int flags, void *cookie)
 {
 	struct irq_desc *desc = &irq_all_descs[irq];
 
@@ -133,7 +131,6 @@ int request_irq(unsigned int irq, irq_handler_t handler,
 	desc->handler = handler;
 	desc->cookie = cookie;
 	desc->flags = flags;
-	desc->name = name;
 
 	return irq_chip_setup_irq(irq, flags);
 }
@@ -154,7 +151,6 @@ void release_irq(unsigned int irq, void *cookie)
 	desc->handler = NULL;
 	desc->cookie = NULL;
 	desc->flags = 0;
-	desc->name = NULL;
 	desc->spurious = 0;
 }
 

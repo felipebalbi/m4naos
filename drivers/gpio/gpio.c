@@ -145,8 +145,7 @@ static int gpio_probe(struct device *dev)
 	/* setup pinmux */
 	gpio_configure_pinmux(gpio);
 
-	ret = request_irq(6, gpio_interrupt, IRQ_TRIGGER_TYPE_LEVEL_HIGH,
-			"gpio", gpio);
+	ret = request_irq(6, gpio_interrupt, IRQ_TRIGGER_TYPE_LEVEL_HIGH, gpio);
 	if (ret)
 		goto err2;
 
