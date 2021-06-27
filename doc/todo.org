@@ -50,7 +50,7 @@
       Completed
     :END:
 
-*** TODO Implement generic IRQ handler [5/7]
+*** TODO Implement generic IRQ handler [7/11]
 
 **** DONE Figure out how to read current IRQ number
      CLOSED: [2021-06-25 Fri 18:35]
@@ -88,9 +88,34 @@
        Completed
      :END:
 
-**** TODO Check how to configure IRQ trigger types
+**** DONE Check how to configure IRQ trigger types
+     CLOSED: [2021-06-27 Sun 10:02]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-27 Sun 10:02] \\
+       Turns out, only EXTI need to configure trigger type. Still, this work
+       is done.
+     :END:
 
-**** TODO Test with GPIO Interrupts
+**** DONE Test with GPIO Interrupts
+     CLOSED: [2021-06-27 Sun 10:03]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-27 Sun 10:03] \\
+       Completed. Managed to get the button in STM32-H405 to trigger an
+       interrupt. This has raised a few things to improve in the subsystem,
+       though. Tasks will be created.
+     :END:
+
+**** TODO Implement EXTI interrupt driver [0/2]
+
+***** TODO Add support for IRQ demuxers
+
+***** TODO Add support for describe IRQ parent
+
+**** TODO Add request_irq()/release_irq() prototypes to irq.h
+
+**** TODO Remove irq_chip_is_pending()
+
+**** TODO Pass IRQ number to device driver somehow
 
 *** CANCELED Implement IRQ handling thread
     CLOSED: [2021-06-25 Fri 18:26]
