@@ -25,6 +25,7 @@
 #include <m4naos/driver.h>
 #include <m4naos/gpio.h>
 #include <m4naos/io.h>
+#include <m4naos/irq.h>
 #include <m4naos/kernel.h>
 #include <m4naos/rcc.h>
 
@@ -44,6 +45,8 @@ struct gpio {
 
 	void __iomem *base;
 };
+
+void __iomem *exti;
 
 static void gpio_configure_pinmux(struct gpio *gpio)
 {
@@ -102,10 +105,25 @@ static void gpio_configure_pinmux(struct gpio *gpio)
 	}
 }
 
+static irqreturn_t gpio_interrupt(int irq, void *_gpio)
+{
+	struct gpio *gpio = _gpio;
+	u32 reg;
+
+	printf("IRQ#%d %p\n", irq, gpio);
+
+	/* Clearing all events */
+	reg = readl(exti, 0x14);
+	writel(exti, 0x14, reg);
+
+	return IRQ_HANDLED;
+}
+
 static int gpio_probe(struct device *dev)
 {
 	struct gpio *gpio;
 	int ret;
+	u32 reg;
 
 	gpio = malloc(sizeof(*gpio));
 	if (!gpio) {
@@ -127,7 +145,34 @@ static int gpio_probe(struct device *dev)
 	/* setup pinmux */
 	gpio_configure_pinmux(gpio);
 
+	ret = request_irq(6, gpio_interrupt, IRQ_TRIGGER_TYPE_LEVEL_HIGH,
+			"gpio", gpio);
+	if (ret)
+		goto err2;
+
+	exti = ioremap(APB2_EXTI);
+	if (!exti) {
+		ret = -ENOMEM;
+		goto err3;
+	}
+
+	/* Falling trigger */
+	reg = readl(exti, 0x0c);
+	reg |= BIT(0);
+	writel(exti, 0x0c, reg);
+
+	/* Interrupt Mask */
+	reg = readl(exti, 0x00);
+	reg |= BIT(0);
+	writel(exti, 0x00, reg);
+
 	return 0;
+
+err3:
+	release_irq(6, gpio);
+
+err2:
+	clk_disable(dev->clk->offset, BIT(dev->clk->bit));
 
 err1:
 	free(gpio);
