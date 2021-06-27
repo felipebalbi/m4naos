@@ -111,6 +111,8 @@
 
 ***** TODO Add support for describe IRQ parent
 
+***** TODO Add support for shared IRQs
+
 **** TODO Add request_irq()/release_irq() prototypes to irq.h
 
 **** DONE Remove irq_chip_is_pending()
