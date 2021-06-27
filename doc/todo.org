@@ -50,7 +50,7 @@
       Completed
     :END:
 
-*** TODO Implement generic IRQ handler [8/11]
+*** TODO Implement generic IRQ handler [9/11]
 
 **** DONE Figure out how to read current IRQ number
      CLOSED: [2021-06-25 Fri 18:35]
@@ -113,7 +113,12 @@
 
 ***** TODO Add support for shared IRQs
 
-**** TODO Add request_irq()/release_irq() prototypes to irq.h
+**** DONE Add request_irq()/release_irq() prototypes to irq.h
+     CLOSED: [2021-06-27 Sun 10:09]
+     :LOGBOOK:
+     - State "DONE"       from "TODO"       [2021-06-27 Sun 10:09] \\
+       Completed.
+     :END:
 
 **** DONE Remove irq_chip_is_pending()
      CLOSED: [2021-06-27 Sun 10:08]

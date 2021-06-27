@@ -42,4 +42,8 @@ typedef enum irqreturn irqreturn_t;
 
 typedef irqreturn_t (*irq_handler_t)(int, void *);
 
+int request_irq(unsigned int irq, irq_handler_t handler,
+		unsigned int flags, const char *name, void *cookie);
+void release_irq(unsigned int irq, void *cookie);
+
 #endif /* __M4NAOS_IRQ_H */
