@@ -79,17 +79,6 @@ static void irq_chip_mark_spurious(struct irq_desc *desc, int irq)
 		irq_chip_disable_irq(irq);
 }
 
-static int irq_chip_is_pending(int irq)
-{
-	u32 offset = irq_chip_irqn_to_reg(irq);
-	u32 bit = irq_chip_irqn_to_bit(irq);
-	u32 reg;
-
-	reg = readl(chip, NVIC_ICPR(offset));
-
-	return reg & bit;
-}
-
 static int irq_desc_has_handler(struct irq_desc *desc)
 {
 	return !!desc->handler;
@@ -123,7 +112,7 @@ void irq_generic_handler(int irq)
 	irqreturn_t ret;
 
 	/* Trigger fault? */
-	if (!irq_desc_has_handler(desc) || !irq_chip_is_pending(irq)) {
+	if (!irq_desc_has_handler(desc)) {
 		irq_chip_mark_spurious(desc, irq);
 		return;
 	}
