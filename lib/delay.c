@@ -27,6 +27,6 @@ void mdelay(u32 ms)
 {
 	u32 now = jiffies;
 
-	while ((jiffies - now) - ms)
+	while ((jiffies - now) < ms)
 		__wfi();
 }
