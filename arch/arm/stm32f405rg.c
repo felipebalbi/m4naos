@@ -269,8 +269,24 @@ static DECLARE_DEVICE(AHB1_GPIOE, gpioe, &gpioe_reset, &gpioe_clk,
 		false, NULL);
 static DECLARE_DEVICE(AHB1_GPIOD, gpiod, &gpiod_reset, &gpiod_clk,
 		false, NULL);
+
+static const struct gpio_pinconf gpioc_pc12_conf = {
+	.pin		= 12,
+	.mode		= GPIO_MODE_OUTPUT,
+};
+
+static const struct gpio_pinconf *gpioc_pinconf[] = {
+	&gpioc_pc12_conf,
+};
+
+static const struct gpio_platform_data gpioc_platform_data = {
+	.pinconf	= gpioc_pinconf,
+	.num_pins	= ARRAY_SIZE(gpioc_pinconf),
+};
+
 static DECLARE_DEVICE(AHB1_GPIOC, gpioc, &gpioc_reset, &gpioc_clk,
-		false, NULL);
+		true, &gpioc_platform_data);
+
 static DECLARE_DEVICE(AHB1_GPIOB, gpiob, &gpiob_reset, &gpiob_clk,
 		false, NULL);
 
