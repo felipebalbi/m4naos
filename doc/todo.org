@@ -140,7 +140,11 @@
     :END:
 
 ** TODO Input Subsystem
-** TODO USB Subsystem
+** TODO USB Subsystem [0/3]
+*** TODO Add basic chapter 9 types
+*** TODO Add minimal USB controller type
+*** TODO Add USB Core
+*** TODO Add USB Serial Class
 ** TODO Pin muxing [3/4]
 *** DONE Define a data format for pinmuxing
     CLOSED: [2021-03-03 Wed 14:06]
