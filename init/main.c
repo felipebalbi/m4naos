@@ -27,7 +27,7 @@
 #include <m4naos/uart.h>
 #include <m4naos/sched.h>
 
-static int task_handler(void *context __unused)
+static int task_handler(void *context)
 {
 	char str[8];
 
