@@ -20,7 +20,7 @@
 #include <m4naos/sys-tick.h>
 
 /*
- * mdelay - delays executions for @ms milisseconds
+ * mdelay - delays executions for @ms miliseconds
  * @ms : time in milisseconds to delay execution
  */
 void mdelay(u32 ms)
@@ -28,11 +28,5 @@ void mdelay(u32 ms)
 	u32 now = jiffies;
 
 	while ((jiffies - now) - ms)
-		/*
-		 * REVISIT: should I enter __wfi() here ?
-		 *
-		 * We know timer ticks with a 1ms period. Is there, really, any
-		 * chance of saving power at all ?
-		 */
-		;
+		__wfi();
 }
