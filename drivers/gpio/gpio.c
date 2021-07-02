@@ -44,9 +44,9 @@ struct gpio {
 	struct device *dev;
 
 	void __iomem *base;
+	void __iomem *exti;
+	u32 state;
 };
-
-void __iomem *exti;
 
 static void gpio_configure_pinmux(struct gpio *gpio)
 {
@@ -110,11 +110,12 @@ static irqreturn_t gpio_interrupt(int irq, void *_gpio)
 	struct gpio *gpio = _gpio;
 	u32 reg;
 
-	printf("IRQ#%d %p\n", irq, gpio);
+	writel(gpio->base, GPIO_BSRR, gpio->state);
+	gpio->state ^= BIT(12) | BIT(28);
 
 	/* Clearing all events */
-	reg = readl(exti, 0x14);
-	writel(exti, 0x14, reg);
+	reg = readl(gpio->exti, 0x14);
+	writel(gpio->exti, 0x14, reg);
 
 	return IRQ_HANDLED;
 }
@@ -149,21 +150,23 @@ static int gpio_probe(struct device *dev)
 	if (ret)
 		goto err2;
 
-	exti = ioremap(APB2_EXTI);
-	if (!exti) {
+	gpio->state = BIT(12);
+
+	gpio->exti = ioremap(APB2_EXTI);
+	if (!gpio->exti) {
 		ret = -ENOMEM;
 		goto err3;
 	}
 
 	/* Falling trigger */
-	reg = readl(exti, 0x0c);
+	reg = readl(gpio->exti, 0x0c);
 	reg |= BIT(0);
-	writel(exti, 0x0c, reg);
+	writel(gpio->exti, 0x0c, reg);
 
 	/* Interrupt Mask */
-	reg = readl(exti, 0x00);
+	reg = readl(gpio->exti, 0x00);
 	reg |= BIT(0);
-	writel(exti, 0x00, reg);
+	writel(gpio->exti, 0x00, reg);
 
 	return 0;
 
