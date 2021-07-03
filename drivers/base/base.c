@@ -29,6 +29,26 @@ static LIST_HEAD(drivers_list);
 static struct device **devices_table;
 static int num_devices;
 
+const struct resource *device_get_resource(struct device *dev,
+		enum resource_type type, int num)
+{
+	const struct resource *res;
+	int n = 0;
+	int i;
+
+	for (i = 0; i < dev->num_resources; i++) {
+		res = dev->resources[i];
+
+		if (res->type == type) {
+			if (n == num)
+				return res;
+			n++;
+		}
+	}
+
+	return NULL;
+}
+
 int register_driver(struct driver *drv)
 {
 	list_add_tail(&drv->list, &drivers_list);

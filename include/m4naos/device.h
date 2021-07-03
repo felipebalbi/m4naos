@@ -63,6 +63,9 @@ static inline void *dev_get_drvdata(struct device *dev)
 
 int register_devices(struct device **devices, int n);
 
+const struct resource *device_get_resource(struct device *dev,
+		enum resource_type type, int num);
+
 void machine_init_devices(void);
 
 #endif /* __M4NAOS_DEVICE_H */
