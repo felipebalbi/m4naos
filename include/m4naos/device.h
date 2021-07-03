@@ -25,7 +25,23 @@
 #include <m4naos/list.h>
 #include <m4naos/reset.h>
 
+enum resource_type {
+	RESOURCE_TYPE_IO_MEM,
+	RESOURCE_TYPE_CLK,
+	RESOURCE_TYPE_RESET,
+	RESOURCE_TYPE_IRQ,
+};
+
+struct resource {
+	enum resource_type type;
+	int		start;
+	int		flags;
+};
+
 struct device {
+	const struct resource **resources;
+	int		num_resources;
+
 	struct reset	*reset;
 	struct clk	*clk;
 	char		name[16];
