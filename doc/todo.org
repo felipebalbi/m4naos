@@ -1,4 +1,4 @@
-* TODO M4naos List of To-Do items [5/11]
+* TODO M4naos List of To-Do items [6/12]
 ** DONE Reset handler
    CLOSED: [2021-02-26 Fri 20:01]
    :LOGBOOK:
@@ -140,7 +140,7 @@
     :END:
 
 ** TODO Input Subsystem
-** TODO USB Subsystem [0/3]
+** TODO USB Subsystem [0/4]
 *** TODO Add basic chapter 9 types
 *** TODO Add minimal USB controller type
 *** TODO Add USB Core
@@ -178,4 +178,10 @@
     - State "DONE"       from "TODO"       [2021-02-26 Fri 20:19]
     :END:
 *** TODO Earliest Deadline Scheduler
+** DONE Introduce =struct resource=
+   CLOSED: [2021-07-03 Sat 12:31]
+   :LOGBOOK:
+   - State "DONE"       from "TODO"       [2021-07-03 Sat 12:31] \\
+     Completed.
+   :END:
 
