@@ -111,7 +111,7 @@ static irqreturn_t gpio_interrupt(int irq, void *_gpio)
 	u32 reg;
 
 	writel(gpio->base, GPIO_BSRR, gpio->state);
-	gpio->state ^= BIT(12) | BIT(28);
+	gpio->state ^= BIT(1) | BIT(17);
 
 	/* Clearing all events */
 	reg = readl(gpio->exti, 0x14);
@@ -124,6 +124,7 @@ static int gpio_probe(struct device *dev)
 {
 	const struct resource *res;
 	struct gpio *gpio;
+	int irq_requested = false;
 	int ret;
 	u32 reg;
 
@@ -159,32 +160,45 @@ static int gpio_probe(struct device *dev)
 	/* setup pinmux */
 	gpio_configure_pinmux(gpio);
 
-	ret = request_irq(6, gpio_interrupt, IRQ_TRIGGER_TYPE_LEVEL_HIGH, gpio);
-	if (ret)
-		goto err2;
+	res = device_get_resource(dev, RESOURCE_TYPE_IRQ, 0);
+	if (res) {
+		ret = request_irq(res->start, gpio_interrupt, res->flags,
+				gpio);
+		if (ret)
+			goto err2;
 
-	gpio->state = BIT(12);
+		irq_requested = true;
+		gpio->state = BIT(1);
 
-	gpio->exti = ioremap(APB2_EXTI);
-	if (!gpio->exti) {
-		ret = -ENOMEM;
-		goto err3;
+		gpio->exti = ioremap(APB2_EXTI);
+		if (!gpio->exti) {
+			ret = -ENOMEM;
+			goto err3;
+		}
+
+		/* Falling trigger */
+		switch (res->flags) {
+		case IRQ_TRIGGER_TYPE_EDGE_FALLING:
+			reg = readl(gpio->exti, 0x0c);
+			reg |= BIT(0);
+			writel(gpio->exti, 0x0c, reg);
+			break;
+		default:
+			/* nothing */
+			break;
+		}
+
+		/* Interrupt Mask */
+		reg = readl(gpio->exti, 0x00);
+		reg |= BIT(0);
+		writel(gpio->exti, 0x00, reg);
 	}
-
-	/* Falling trigger */
-	reg = readl(gpio->exti, 0x0c);
-	reg |= BIT(0);
-	writel(gpio->exti, 0x0c, reg);
-
-	/* Interrupt Mask */
-	reg = readl(gpio->exti, 0x00);
-	reg |= BIT(0);
-	writel(gpio->exti, 0x00, reg);
 
 	return 0;
 
 err3:
-	release_irq(6, gpio);
+	if (irq_requested)
+		release_irq(6, gpio);
 
 err2:
 	clk_disable(dev->clk->offset, BIT(dev->clk->bit));

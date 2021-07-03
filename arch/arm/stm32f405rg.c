@@ -21,6 +21,7 @@
 #include <m4naos/clk.h>
 #include <m4naos/device.h>
 #include <m4naos/hardware.h>
+#include <m4naos/irq.h>
 #include <m4naos/kernel.h>
 #include <m4naos/reset.h>
 
@@ -1717,15 +1718,27 @@ static const struct resource gpioa_addr = {
 	.flags	= 0,
 };
 
+static const struct resource gpioa_irq = {
+	.type	= RESOURCE_TYPE_IRQ,
+	.start	= 6,
+	.flags	= IRQ_TRIGGER_TYPE_EDGE_FALLING,
+};
+
 static const struct resource *gpioa_resources[] = {
 	&gpioa_addr,
 	&gpioa_clk,
 	&gpioa_reset,
+	&gpioa_irq,
 };
 
 static const struct gpio_pinconf gpioa_pa0_conf = {
 	.pin		= 0,
 	.mode		= GPIO_MODE_INPUT,
+};
+
+static const struct gpio_pinconf gpioa_pa1_conf = {
+	.pin		= 1,
+	.mode		= GPIO_MODE_OUTPUT,
 };
 
 static const struct gpio_pinconf gpioa_pa9_conf = {
@@ -1742,6 +1755,7 @@ static const struct gpio_pinconf gpioa_pa10_conf = {
 
 static const struct gpio_pinconf *gpioa_pinconf[] = {
 	&gpioa_pa0_conf,
+	&gpioa_pa1_conf,
 	&gpioa_pa9_conf,
 	&gpioa_pa10_conf,
 };
