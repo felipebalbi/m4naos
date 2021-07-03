@@ -40,7 +40,8 @@
 #define GPIO_AFRL		0x20
 #define GPIO_AFRH		0x24
 
-struct gpio {
+struct gpio_stm32 {
+	struct gpio_chip chip;
 	struct device *dev;
 
 	void __iomem *base;
@@ -48,7 +49,64 @@ struct gpio {
 	u32 state;
 };
 
-static void gpio_configure_pinmux(struct gpio *gpio)
+static int gpio_stm32_request(struct gpio_chip *chip, int pin)
+{
+	return 0;
+}
+
+static void gpio_stm32_release(struct gpio_chip *chip, int pin)
+{
+}
+
+static int gpio_stm32_set_direction(struct gpio_chip *chip, int pin, int dir)
+{
+	return 0;
+}
+
+static int gpio_stm32_set_bias(struct gpio_chip *chip, int ping, int bias)
+{
+	return 0;
+}
+
+static int gpio_stm32_set_speed(struct gpio_chip *chip, int pin, int speed)
+{
+	return 0;
+}
+
+static int gpio_stm32_set_value(struct gpio_chip *chip, int pin, int value)
+{
+	struct gpio_stm32 *gpio = container(chip, struct gpio_stm32, chip);
+
+	if (!chip)
+		return -ENODEV;
+
+	if (pin < 0 || pin > chip->ngpio)
+		return -EINVAL;
+
+	if (value)
+		writel(gpio->base, GPIO_BSRR, BIT(pin));
+	else
+		writel(gpio->base, GPIO_BSRR, BIT(pin + 16));
+
+	return 0;
+}
+
+static int gpio_stm32_get_value(struct gpio_chip *chip, int pin)
+{
+	return 0;
+}
+
+static const struct gpio_ops gpio_stm32_ops = {
+	.request	= gpio_stm32_request,
+	.release	= gpio_stm32_release,
+	.set_direction	= gpio_stm32_set_direction,
+	.set_bias	= gpio_stm32_set_bias,
+	.set_speed	= gpio_stm32_set_speed,
+	.set_value	= gpio_stm32_set_value,
+	.get_value	= gpio_stm32_get_value,
+};
+
+static void gpio_configure_pinmux(struct gpio_stm32 *gpio)
 {
 	const struct gpio_platform_data *pdata = gpio->dev->platform_data;
 	int i;
@@ -105,9 +163,9 @@ static void gpio_configure_pinmux(struct gpio *gpio)
 	}
 }
 
-static irqreturn_t gpio_interrupt(int irq, void *_gpio)
+static irqreturn_t gpio_stm32_interrupt(int irq, void *_gpio)
 {
-	struct gpio *gpio = _gpio;
+	struct gpio_stm32 *gpio = _gpio;
 	u32 reg;
 
 	writel(gpio->base, GPIO_BSRR, gpio->state);
@@ -120,10 +178,10 @@ static irqreturn_t gpio_interrupt(int irq, void *_gpio)
 	return IRQ_HANDLED;
 }
 
-static int gpio_probe(struct device *dev)
+static int gpio_stm32_probe(struct device *dev)
 {
 	const struct resource *res;
-	struct gpio *gpio;
+	struct gpio_stm32 *gpio;
 	int irq_requested = false;
 	int ret;
 	u32 reg;
@@ -135,6 +193,8 @@ static int gpio_probe(struct device *dev)
 	}
 
 	gpio->dev = dev;
+	gpio->chip.ops = &gpio_stm32_ops;
+	gpio->chip.ngpio = 16;
 	dev_set_drvdata(dev, gpio);
 
 	res = device_get_resource(dev, RESOURCE_TYPE_IO_MEM, 0);
@@ -162,7 +222,7 @@ static int gpio_probe(struct device *dev)
 
 	res = device_get_resource(dev, RESOURCE_TYPE_IRQ, 0);
 	if (res) {
-		ret = request_irq(res->start, gpio_interrupt, res->flags,
+		ret = request_irq(res->start, gpio_stm32_interrupt, res->flags,
 				gpio);
 		if (ret)
 			goto err2;
@@ -194,6 +254,10 @@ static int gpio_probe(struct device *dev)
 		writel(gpio->exti, 0x00, reg);
 	}
 
+	ret = gpio_register(&gpio->chip);
+	if (ret)
+		goto err3;
+
 	return 0;
 
 err3:
@@ -210,13 +274,13 @@ err0:
 	return ret;
 }
 
-static struct driver gpio_driver = {
+static struct driver gpio_stm32_driver = {
 	.name		= "gpio",
-	.probe		= gpio_probe,
+	.probe		= gpio_stm32_probe,
 };
 
-static int gpio_init(void)
+static int gpio_stm32_init(void)
 {
-	return register_driver(&gpio_driver);
+	return register_driver(&gpio_stm32_driver);
 }
-subsys_init(gpio_init);
+module_init(gpio_stm32_init);

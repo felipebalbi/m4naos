@@ -20,6 +20,7 @@
 #ifndef __M4NAOS_GPIO_H
 #define __M4NAOS_GPIO_H
 
+#include <m4naos/list.h>
 #include <m4naos/kernel.h>
 
 #define GPIO_MODE_INPUT			0x00
@@ -41,6 +42,8 @@
 
 #define GPIO_FUNCTION(n)		((n) & 0x0f)
 
+struct gpio_chip;
+
 struct gpio_pinconf {
 	u8 pin;
 	u8 mode;
@@ -54,5 +57,31 @@ struct gpio_platform_data {
 	const struct gpio_pinconf **pinconf;
 	int num_pins;
 };
+
+struct gpio_ops {
+	int (*request)(struct gpio_chip *chip, int gpio);
+	void (*release)(struct gpio_chip *chip, int gpio);
+	int (*set_direction)(struct gpio_chip *chip, int gpio, int dir);
+	int (*set_bias)(struct gpio_chip *chip, int gpio, int bias);
+	int (*set_speed)(struct gpio_chip *chip, int gpio, int speed);
+	int (*set_value)(struct gpio_chip *chip, int gpio, int value);
+	int (*get_value)(struct gpio_chip *chip, int gpio);
+};
+
+struct gpio_chip {
+	struct list_head list;
+	const struct gpio_ops *ops;
+	int ngpio;
+	int base;
+};
+
+int gpio_register(struct gpio_chip *chip);
+int gpio_request(int gpio);
+void gpio_release(int gpio);
+int gpio_set_direction(int gpio, int dir);
+int gpio_set_bias(int gpio, int bias);
+int gpio_set_speed(int gpio, int speed);
+int gpio_set_value(int gpio, int value);
+int gpio_get_value(int gpio);
 
 #endif /* __M4NAOS_GPIO_H */
