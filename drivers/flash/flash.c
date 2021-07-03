@@ -42,10 +42,17 @@
 
 static int flash_probe(struct device *dev)
 {
+	const struct resource *res;
 	void __iomem *base;
 	int ret;
 
-	base = ioremap(dev->base);
+	res = device_get_resource(dev, RESOURCE_TYPE_IO_MEM, 0);
+	if (!res) {
+		ret = -ENOMEM;
+		goto err0;
+	}
+
+	base = ioremap(res->start);
 	if (!base) {
 		ret = -ENOMEM;
 		goto err0;

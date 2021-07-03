@@ -59,12 +59,25 @@ void uart_puts(const char *str)
 
 static int uart_probe(struct device *dev)
 {
+	const struct resource *res;
 	u32 reg;
 	int ret;
 
-	clk_enable(dev->clk->offset, BIT(dev->clk->bit));
+	res = device_get_resource(dev, RESOURCE_TYPE_CLK, 0);
+	if (!res) {
+		ret = -ENOMEM;
+		goto err0;
+	}
 
-	base = ioremap(dev->base);
+	clk_enable(res->start, BIT(res->flags));
+
+	res = device_get_resource(dev, RESOURCE_TYPE_IO_MEM, 0);
+	if (!res) {
+		ret = -ENOMEM;
+		goto err0;
+	}
+
+	base = ioremap(res->start);
 	if (!base) {
 		ret = -ENOMEM;
 		goto err0;

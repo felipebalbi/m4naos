@@ -122,6 +122,7 @@ static irqreturn_t gpio_interrupt(int irq, void *_gpio)
 
 static int gpio_probe(struct device *dev)
 {
+	const struct resource *res;
 	struct gpio *gpio;
 	int ret;
 	u32 reg;
@@ -135,13 +136,25 @@ static int gpio_probe(struct device *dev)
 	gpio->dev = dev;
 	dev_set_drvdata(dev, gpio);
 
-	gpio->base = ioremap(dev->base);
+	res = device_get_resource(dev, RESOURCE_TYPE_IO_MEM, 0);
+	if (!res) {
+		ret = -ENOMEM;
+		goto err0;
+	}
+
+	gpio->base = ioremap(res->start);
 	if (!gpio->base) {
 		ret = -ENOMEM;
 		goto err1;
 	}
 
-	clk_enable(dev->clk->offset, BIT(dev->clk->bit));
+	res = device_get_resource(dev, RESOURCE_TYPE_CLK, 0);
+	if (!res) {
+		ret = -ENOMEM;
+		goto err1;
+	}
+
+	clk_enable(res->start, BIT(res->flags));
 
 	/* setup pinmux */
 	gpio_configure_pinmux(gpio);

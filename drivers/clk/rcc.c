@@ -169,6 +169,7 @@ void clk_disable(u32 offset, u32 mask)
 
 static int rcc_probe(struct device *dev)
 {
+	const struct resource *res;
 	struct rcc *rcc;
 	int ret;
 
@@ -181,7 +182,13 @@ static int rcc_probe(struct device *dev)
 	rcc->dev = dev;
 	dev_set_drvdata(dev, rcc);
 
-	rcc->base = ioremap(dev->base);
+	res = device_get_resource(dev, RESOURCE_TYPE_IO_MEM, 0);
+	if (!res) {
+		ret = -ENOMEM;
+		goto err1;
+	}
+
+	rcc->base = ioremap(res->start);
 	if (!rcc->base) {
 		ret = -ENOMEM;
 		goto err1;
