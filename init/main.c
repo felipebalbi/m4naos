@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <m4naos/delay.h>
+#include <m4naos/gpio.h>
 #include <m4naos/hardware.h>
 #include <m4naos/irq.h>
 #include <m4naos/kernel.h>
@@ -26,6 +27,44 @@
 #include <m4naos/io.h>
 #include <m4naos/uart.h>
 #include <m4naos/sched.h>
+
+static int heartbeat_handler(void *_gpio)
+{
+	int ret;
+
+	/* PC12, note that GPIOB is off */
+	ret = gpio_request(28);
+	if (ret)
+		goto err0;
+
+	ret = gpio_set_direction(28, GPIO_MODE_OUTPUT);
+	if (ret)
+		goto err1;
+
+	ret = gpio_set_bias(28, GPIO_PULL_DOWN);
+	if (ret)
+		goto err1;
+
+	while (true) {
+		gpio_set_value(28, 1);
+		mdelay(100);
+		gpio_set_value(28, 0);
+		mdelay(100);
+
+		gpio_set_value(28, 1);
+		mdelay(100);
+		gpio_set_value(28, 0);
+		mdelay(500);
+	}
+
+	return 0;
+
+err1:
+	gpio_release(28);
+
+err0:
+	return ret;
+}
 
 static int task_handler(void *context)
 {
@@ -45,7 +84,7 @@ int main(void)
 	struct task *t1;
 	int i;
 
-	t0 = task_create(task_handler, NULL, 0);
+	t0 = task_create(heartbeat_handler, NULL, 0);
 	task_enqueue(t0);
 
 	for (i = 0; i < 16; i++) {
