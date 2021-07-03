@@ -1734,11 +1734,13 @@ static const struct resource *gpioa_resources[] = {
 static const struct gpio_pinconf gpioa_pa0_conf = {
 	.pin		= 0,
 	.mode		= GPIO_MODE_INPUT,
+	.speed		= GPIO_SPEED_VERY_HIGH,
 };
 
 static const struct gpio_pinconf gpioa_pa1_conf = {
 	.pin		= 1,
 	.mode		= GPIO_MODE_OUTPUT,
+	.speed		= GPIO_SPEED_VERY_HIGH,
 };
 
 static const struct gpio_pinconf gpioa_pa9_conf = {
