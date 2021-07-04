@@ -31,4 +31,8 @@ typedef signed char s8;
 typedef u32 size_t;
 typedef signed ssize_t;
 
+typedef u32 __le32;
+typedef u16 __le16;
+typedef u8 __u8;
+
 #endif /* __M4NAOS_TYPES_H */
