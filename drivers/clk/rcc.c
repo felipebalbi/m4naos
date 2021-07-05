@@ -91,7 +91,7 @@ struct rcc {
 	void __iomem *base;
 };
 
-struct rcc *the_rcc;
+static struct rcc *the_rcc;
 
 static void system_clock_init(void)
 {
