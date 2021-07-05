@@ -18,20 +18,17 @@ Cortex-M devices, don't quote me on that, though.
 
 # Coding Style
 
-We're using the Linux Kernel's style, mainly because I like it and my GNU Emacs
-is already configured properly.
+We're using the Linux Kernel's style, mainly because I like it and my
+GNU Emacs is already configured properly.
 
-Note that we're not aligning argument list to the opening parenthesis, we're
-just adding two tabs after the line break.
+Note that we're not aligning argument list to the opening parenthesis,
+we're just adding two tabs after the line break.
 
 ## Note for contributors
 
-The project will only accept GPL v3+ contributions. Please don't send any code
-unless you agree with the terms of GPL v3+.
+The project will only accept GPL v3+ contributions. Please don't send
+any code unless you agree with the terms of GPL v3+.
 
 # License
 
 The code is licensed as GPL v3+
-
-[1]: http://www.coreboot.org/
-[2]: https://libreboot.org/
