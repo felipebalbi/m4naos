@@ -1295,7 +1295,7 @@ static const struct resource *usb_otg_hs_resources[] = {
 };
 
 static struct device usb_otg_hs_device __ccm = {
-	.name	= "usb_otg_hs",
+	.name	= "dwc2",
 	.status	= false,
 	.resources = usb_otg_hs_resources,
 	.num_resources = ARRAY_SIZE(usb_otg_hs_resources),
