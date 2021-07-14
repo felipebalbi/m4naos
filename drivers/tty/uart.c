@@ -93,14 +93,35 @@ static int uart_probe(struct device *dev)
 	writel(base, USART_CR2, reg);
 
 	/*
-	 * According to Table 143, page 988 on STM32F405 reference manual, the
-	 * following results in a baud rate of 10.5Mbps with an error of 0%.
+	 * We're running with Pclk = 84MHz and want to achieve a Baudrate of
+	 * 115200bps. This means that we have to solve the equation:
+	 *
+	 *	baud = fclk / (8 * 2 * USARTDIV)
+	 *
+	 * Where baud is 115200bps and fclk is 84MHz. Isolating
+	 * USARTDIV we have:
+	 *
+	 *	USARTDIV = 84000000 / (8 * 2 * 115200)
+	 *		 = 84000000 / 1843200
+	 *		 = 45.5729
+	 *
+	 * Thus, we have mantissa = 45 and fraction = 0.5729. The
+	 * closest fraction we can represent is 0.5625.
+	 *
+	 * Converting to hex we end up with:
+	 *
+	 *	MANTISSA = 0x2d
+	 *	FRACTION = 0x9
+	 *
+	 * Which results in:
+	 *
+	 *	BRR = 0x2d9
 	 */
-	reg = 0x10; /* 1.0 */
+	reg = 0x2d9; /* 45.5625 */
 	writel(base, USART_BRR, reg);
 
 	reg = readl(base, USART_CR1);
-	reg |= 	BIT(15) | BIT(3); /* OVER8 | TE */
+	reg |= BIT(3); /* TE */
 	writel(base, USART_CR1, reg);
 
 	return 0;
