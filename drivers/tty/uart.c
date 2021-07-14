@@ -93,7 +93,7 @@ static int uart_probe(struct device *dev)
 	writel(base, USART_CR2, reg);
 
 	/*
-	 * According to Table 137, page 982 on STM32F405 reference manual, the
+	 * According to Table 143, page 988 on STM32F405 reference manual, the
 	 * following results in a baud rate of 10.5Mbps with an error of 0%.
 	 */
 	reg = 0x10; /* 1.0 */
