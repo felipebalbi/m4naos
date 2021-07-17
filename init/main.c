@@ -88,7 +88,7 @@ int main(void)
 	task_enqueue(t0);
 
 	for (i = 0; i < 16; i++) {
-		t1 = task_create(task_handler, NULL, i & 1);
+		t1 = task_create(task_handler, NULL, 1);
 		task_enqueue(t1);
 	}
 
