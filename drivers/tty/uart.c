@@ -59,7 +59,9 @@ void uart_putch(char c)
 
 void uart_puts(const char *str)
 {
+	local_irq_disable();
 	__uart_puts(str);
+	local_irq_enable();
 }
 
 static int uart_probe(struct device *dev)

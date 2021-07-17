@@ -38,6 +38,16 @@
 #include <m4naos/kernel.h>
 #include <m4naos/hardware.h>
 
+static inline __always_inline void preempt_enable(void)
+{
+	asm("cpsie f");
+}
+
+static inline __always_inline void preempt_disable(void)
+{
+	asm("cpsid f");
+}
+
 static inline __always_inline void local_irq_enable(void)
 {
 	asm("cpsie i");
