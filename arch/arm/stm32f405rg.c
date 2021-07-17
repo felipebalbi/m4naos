@@ -989,7 +989,7 @@ static const struct resource *usart1_resources[] = {
 
 static struct device usart1_device __ccm = {
 	.name	= "usart1",
-	.status	= false,
+	.status	= true,
 	.resources = usart1_resources,
 	.num_resources = ARRAY_SIZE(usart1_resources),
 	.platform_data = NULL,
