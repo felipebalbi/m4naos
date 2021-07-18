@@ -68,12 +68,10 @@ err0:
 
 static int task_handler(void *context)
 {
-	char str[8];
-
-	snprintf(str, 8, "TASK%d\n", current->id);
-
-	while (true)
-		uart_puts(str);
+	while (true) {
+		printf("Task #%d\n", current->id);
+		mdelay(1);
+	}
 
 	return 0;
 }
