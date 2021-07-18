@@ -91,7 +91,7 @@ static int uart_probe(struct device *dev)
 	}
 
 	reg = readl(base, USART_CR1);
-	reg |= 	BIT(13); /* UE */
+	reg |= BIT(15) | BIT(13); /* OVER8 | UE */
 	reg &= ~BIT(12); /* M */
 	writel(base, USART_CR1, reg);
 
@@ -103,28 +103,26 @@ static int uart_probe(struct device *dev)
 	 * We're running with Pclk = 84MHz and want to achieve a Baudrate of
 	 * 115200bps. This means that we have to solve the equation:
 	 *
-	 *	baud = fclk / (8 * 2 * USARTDIV)
+	 *	baud = fclk / (8 * (2 - OVER8) * USARTDIV)
 	 *
-	 * Where baud is 115200bps and fclk is 84MHz. Isolating
-	 * USARTDIV we have:
+	 * Where baud is 2Mbps and fclk is 84MHz. Isolating USARTDIV we have:
 	 *
-	 *	USARTDIV = 84000000 / (8 * 2 * 115200)
-	 *		 = 84000000 / 1843200
-	 *		 = 45.5729
+	 *	USARTDIV = 84000000 / (8 * (2 - 1) * 2000000)
+	 *		 = 84000000 / 16000000
+	 *		 = 5.25
 	 *
-	 * Thus, we have mantissa = 45 and fraction = 0.5729. The
-	 * closest fraction we can represent is 0.5625.
+	 * Thus, we have mantissa = 5 and fraction = 0.25.
 	 *
 	 * Converting to hex we end up with:
 	 *
-	 *	MANTISSA = 0x2d
-	 *	FRACTION = 0x9
+	 *	MANTISSA = 0x5
+	 *	FRACTION = 0x4
 	 *
 	 * Which results in:
 	 *
-	 *	BRR = 0x2d9
+	 *	BRR = 0x54
 	 */
-	reg = 0x2d9; /* 45.5625 */
+	reg = 0x54; /* 5.25 */
 	writel(base, USART_BRR, reg);
 
 	reg = readl(base, USART_CR1);
