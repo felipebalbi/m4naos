@@ -84,7 +84,7 @@ int main(void)
 	struct task *t1;
 	int i;
 
-	t0 = task_create(heartbeat_handler, NULL, 0);
+	t0 = task_create(heartbeat_handler, NULL, 1);
 	task_enqueue(t0);
 
 	for (i = 0; i < 16; i++) {
