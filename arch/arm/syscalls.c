@@ -35,7 +35,7 @@ static inline char *__get_stack_ptr(void)
 caddr_t __used _sbrk(int incr)
 {
 	extern char _end;
-	static char *heap_end = &_end ;
+	static char *heap_end = &_end;
 	char *prev_heap_end = heap_end;
 
 	if (heap_end + incr > __get_stack_ptr()) {
