@@ -47,6 +47,7 @@ add_subdirectory(kernel)
 add_subdirectory(init)
 add_subdirectory(lib)
 add_subdirectory(drivers)
+add_subdirectory(app)
 
 # Custom Targets
 add_custom_command(OUTPUT ${PROJECT_NAME}.bin DEPENDS ${PROJECT_NAME}
