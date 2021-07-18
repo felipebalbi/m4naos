@@ -28,6 +28,8 @@
 #include <m4naos/uart.h>
 #include <m4naos/sched.h>
 
+#define PAJE_PROMPT "user> "
+
 static int heartbeat_handler(void *_gpio)
 {
 	int ret;
@@ -66,11 +68,51 @@ err0:
 	return ret;
 }
 
-static int task_handler(void *context)
+static char *read_repl(char *str)
 {
+	return str;
+}
+
+static char *eval_repl(char *str)
+{
+	return str;
+}
+
+static int print_repl(char *str)
+{
+	return printf("%s\n", str);
+}
+
+static void rep(char *str)
+{
+	int ret;
+
+	ret = print_repl(eval_repl(read_repl(str)));
+	if (ret < 0)
+		printf("Failed to process input\n");
+}
+
+static char *readline(char *str)
+{
+	return str;
+}
+
+static void paje_print_banner(void)
+{
+	printf("\n\nPaje Scheme v%d.%d.%x\n",
+			M4NAOS_VERSION_MAJOR,
+			M4NAOS_VERSION_MINOR,
+			M4NAOS_VERSION_PATCH);
+}
+
+static int paje_handler(void *context)
+{
+	paje_print_banner();
+
 	while (true) {
-		printf("Task #%d\n", current->id);
-		mdelay(1);
+		char *input = readline(PAJE_PROMPT);
+
+		rep(input);
 	}
 
 	return 0;
@@ -80,15 +122,12 @@ int main(void)
 {
 	struct task *t0;
 	struct task *t1;
-	int i;
 
 	t0 = task_create(heartbeat_handler, NULL, 1);
 	task_enqueue(t0);
 
-	for (i = 0; i < 16; i++) {
-		t1 = task_create(task_handler, NULL, 1);
-		task_enqueue(t1);
-	}
+	t1 = task_create(paje_handler, NULL, 1);
+	task_enqueue(t1);
 
 	task_run(t0);
 
