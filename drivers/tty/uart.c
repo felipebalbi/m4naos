@@ -38,12 +38,12 @@ static void __iomem *base;
 static void __uart_putch(char c)
 {
 	if (c == '\n') {
-		while (!(readl(base, USART_SR) & BIT(6)));
 		writeb(base, USART_DR, '\r');
+		while (!(readl(base, USART_SR) & BIT(6)));
 	}
 
-	while (!(readl(base, USART_SR) & BIT(6)));
 	writeb(base, USART_DR, c);
+	while (!(readl(base, USART_SR) & BIT(6)));
 }
 
 static void __uart_puts(const char *str)
