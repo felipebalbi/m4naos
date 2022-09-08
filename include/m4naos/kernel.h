@@ -70,7 +70,7 @@ typedef int (*late_initcall_t)(void);
 	{							\
 		return register_driver(&__drv);			\
 	}							\
-	level##_init(__drv##init)
+	level##_init(__drv##_init)
 
 #define early_init(fn)		level_init(early, fn)
 #define core_init(fn)		level_init(core, fn)
