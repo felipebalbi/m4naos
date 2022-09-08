@@ -211,8 +211,4 @@ static struct driver rcc_driver = {
 	.probe		= rcc_probe,
 };
 
-static int rcc_init(void)
-{
-	return register_driver(&rcc_driver);
-}
-core_init(rcc_init);
+core_driver_register(rcc_driver);

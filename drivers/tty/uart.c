@@ -140,8 +140,4 @@ static struct driver uart_driver = {
 	.probe		= uart_probe,
 };
 
-static int uart_init(void)
-{
-	return register_driver(&uart_driver);
-}
-postcore_init(uart_init);
+postcore_driver_register(uart_driver);

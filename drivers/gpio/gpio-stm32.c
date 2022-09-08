@@ -279,8 +279,4 @@ static struct driver gpio_stm32_driver = {
 	.probe		= gpio_stm32_probe,
 };
 
-static int gpio_stm32_init(void)
-{
-	return register_driver(&gpio_stm32_driver);
-}
-module_init(gpio_stm32_init);
+module_driver_register(gpio_stm32_driver);

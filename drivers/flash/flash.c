@@ -73,8 +73,4 @@ static struct driver flash_driver = {
 	.probe		= flash_probe,
 };
 
-static int flash_init(void)
-{
-	return register_driver(&flash_driver);
-}
-early_init(flash_init);
+early_driver_register(flash_driver);
